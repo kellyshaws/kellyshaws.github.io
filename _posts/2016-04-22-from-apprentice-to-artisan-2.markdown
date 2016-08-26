@@ -14,37 +14,33 @@ categories:
 
 让我们考虑另一个例子来巩固理解。可能我们想要去提醒用户该交钱了。我们会定义两个接口，或者约定。这些约定使我们在更改实际实现时更加灵活。<br>
 
-```php
+```
+interface BillerInterface 
+{
+    public function bill(array $user, $amount);
+}
 
-	interface BillerInterface 
-	{
-	    public function bill(array $user, $amount);
-	}
-
-	interface BillingNotifierInterface 
-	{
-	    public function notify(array $user, $amount);
-	}
-
+interface BillingNotifierInterface 
+{
+    public function notify(array $user, $amount);
+}
 ```
 
 接下来我们要写一个BillerInterface的实现：<br>
 
-```php
-
-	class StripeBiller implements BillerInterface
-	{
-	    public function __construct(BillingNotifierInterface $notifier)
-	    {
-	        $this->notifier = $notifier;
-	    }
-	    public function bill(array $user, $amount)
-	    {
-	        // Bill the user via Stripe...
-	        $this->notifier->notify($user, $amount);
-	    }
+```
+class StripeBiller implements BillerInterface
+{
+    public function __construct(BillingNotifierInterface $notifier)
+    {
+        $this->notifier = $notifier;
     }
-
+    public function bill(array $user, $amount)
+    {
+        // Bill the user via Stripe...
+        $this->notifier->notify($user, $amount);
+    }
+}
 ```
 
 只要遵守了每个类的责任划分，我们很容易将不同的提示器注入到账单类里面。比如，我们可以注入一个SmsNotifier或者EmailNotifier。账单类只要遵守了约定，就不用再考虑如何实现提示功能。只要是遵守约定的类，账单类都能用。这不仅仅是方便了我们的开发，而且我们还可以通过模拟BillingNotifierInterface来进行无痛测试。<br>
@@ -59,10 +55,8 @@ categories:
 
 那我们如何做依赖注入呢？很简单：<br>
 
-```php 
-
-	$biller = new StripeBiller(new SmsNotifier);
-
+``` 
+$biller = new StripeBiller(new SmsNotifier);
 ```
 
 这就是依赖注入。biller不需再考虑提醒用户的事儿，我们直接传给他一个提示器。这种微小的改动能使你的应用焕然一新。你的代码马上就变得更容易维护，因为明确指定了类的职责边界。并且更容易测试，你只需使用模拟依赖即可。<br>

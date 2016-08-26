@@ -45,9 +45,7 @@ HTTP 是一种没有状态的协议，也就是它并不知道是谁是访问应
 中间用点分隔开，并且都会使用 Base64 编码，所以真正的 Token 看起来像这样：<br>
 
 ```
-
 eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJuaW5naGFvLm5ldCIsImV4cCI6IjE0Mzg5NTU0NDUiLCJuYW1lIjoid2FuZ2hhbyIsImFkbWluIjp0cnVlfQ.SwyHTEx_RQppr97g4J5lKXtabJecpejuef8AqKYMAJc
-
 ```
 
 ###Header###
@@ -55,20 +53,16 @@ eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJuaW5naGFvLm5ldCIsImV4cCI6IjE0Mzg
 header 部分主要是两部分内容，一个是 Token 的类型，另一个是使用的算法，比如下面类型就是 JWT，使用的算法是 HS256。<br>
 
 ```
-
-	{
-	  "typ": "JWT",
-	  "alg": "HS256"
-	}
-
+{
+  "typ": "JWT",
+  "alg": "HS256"
+}
 ```
 
 上面的内容要用 Base64 的形式编码一下，所以就变成这样：<br>
 
 ```
-
-	eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9
-
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9
 ```
 
 ###Payload###
@@ -86,21 +80,17 @@ Payload 里面是 Token 的具体内容，这些内容里面有一些是标准�
 比如下面这个 Payload ，用到了 iss 发行人，还有 exp 过期时间。另外还有两个自定义的字段，一个是 name ，还有一个是 admin 。<br>
 
 ```
-
-	{
-	 "iss": "suxia.com",
-	 "exp": "1438955445",
-	 "name": "suxia",
-	 "admin": true
-	}
-
+{
+ "iss": "suxia.com",
+ "exp": "1438955445",
+ "name": "suxia",
+ "admin": true
+}
 ```
 使用 Base64 编码以后就变成了这个样子：<br>
 
 ```
-
-	eyJpc3MiOiJuaW5naGFvLm5ldCIsImV4cCI6IjE0Mzg5NTU0NDUiLCJuYW1lIjoid2FuZ2hhbyIsImFkbWluIjp0cnVlfQ
-
+eyJpc3MiOiJuaW5naGFvLm5ldCIsImV4cCI6IjE0Mzg5NTU0NDUiLCJuYW1lIjoid2FuZ2hhbyIsImFkbWluIjp0cnVlfQ
 ```
 
 ###Signature###
@@ -112,24 +102,18 @@ JWT 的最后一部分是 Signature ，这部分内容有三个部分，先是�
 - secret
 
 ```
-
-	var encodedString = base64UrlEncode(header) + "." + base64UrlEncode(payload); 
-	HMACSHA256(encodedString, 'secret');
-
+var encodedString = base64UrlEncode(header) + "." + base64UrlEncode(payload); 
+HMACSHA256(encodedString, 'secret');
 ```
 处理完成以后看起来像这样：<br>
 
 ```
-
-	SwyHTEx_RQppr97g4J5lKXtabJecpejuef8AqKYMAJc
-
+SwyHTEx_RQppr97g4J5lKXtabJecpejuef8AqKYMAJc
 ```
 
 最后这个在服务端生成并且要发送给客户端的 Token 看起来像这样：<br>
 
 ```
-
-	eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJuaW5naGFvLm5ldCIsImV4cCI6IjE0Mzg5NTU0NDUiLCJuYW1lIjoid2FuZ2hhbyIsImFkbWluIjp0cnVlfQ.SwyHTEx_RQppr97g4J5lKXtabJecpejuef8AqKYMAJc
-
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJuaW5naGFvLm5ldCIsImV4cCI6IjE0Mzg5NTU0NDUiLCJuYW1lIjoid2FuZ2hhbyIsImFkbWluIjp0cnVlfQ.SwyHTEx_RQppr97g4J5lKXtabJecpejuef8AqKYMAJc
 ```
 客户端收到这个 Token 以后把它存储下来，下回向服务端发送请求的时候就带着这个 Token 。服务端收到这个 Token ，然后进行验证，通过以后就会返回给客户端想要的资源。<br/>

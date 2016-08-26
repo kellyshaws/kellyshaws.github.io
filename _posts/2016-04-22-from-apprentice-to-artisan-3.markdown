@@ -24,24 +24,20 @@ categories:
 
 在Laravel应用里，你可以通过App来访问控制反转容器。容器有很多方法，不过我们从最基础的开始。让我们继续使用上一章写的BillerInterface和BillingNotifierInterface，且假设我们使用了Stripe来进行支付操作。我们可以将Stripe的支付实现绑定到容器里，就像这样：<br>
 
-```php
-
-	App::bind('BillerInterface', function()
-	{
-	    return new StripeBiller(App::make('BillingNotifierInterface'));
-	});
-
+```
+App::bind('BillerInterface', function()
+{
+    return new StripeBiller(App::make('BillingNotifierInterface'));
+});
 ```
 
 注意在我们处理BillingInterface时，我们额外需要一个BillingNotifierInterface的实现，也就是再来一个bind：<br>
 
-```php
-
-	App::bind('BillingNotifierInterface', function()
-	{
-	    return new EmailBillingNotifier;
-	});
-
+```
+App::bind('BillingNotifierInterface', function()
+{
+    return new EmailBillingNotifier;
+});
 ```
 
 如你所见，这个容器就是个用来存储各种绑定的地方。一旦一个类在容器里绑定了以后，我们可以很容易的在应用的任何位置调用它。我们甚至可以在bind函数内写另外的bind。<br>
@@ -58,29 +54,25 @@ categories:
 
 比如考虑以下代码：<br>
 
-```php
+```
+class UserController extends BaseController
+{
 
-	class UserController extends BaseController
-	{
-
-	    public function __construct(BillerInterface $biller)
-	    {
-	        $this->biller = $biller;
-	    }
-	}
-
+    public function __construct(BillerInterface $biller)
+    {
+        $this->biller = $biller;
+    }
+}
 ```
 
 当这个控制器通被容器实例化后，包含着EmailBillingNotifier的StripeBiller会被注入到这个控制器中。如果我们现在想要换一种提示方式，我们可以简单的将代码改为这样：<br>
 
 
-```php
-
-	App::bind('BillingNotifierInterface', function()
-	{
-	    return new SmsBillingNotifier;
-	});
-
+```
+App::bind('BillingNotifierInterface', function()
+{
+    return new SmsBillingNotifier;
+});
 ```
 
 现在不管在应用的哪里需要一个提示器，我们总会得到SmsBillingNotifier的对象。利用这种结构，我们的应用可以在不同的实现方式之间快速切换。<br>
@@ -89,24 +81,20 @@ categories:
 
 想在应用中只实例化某类一次？没问题，使用singleton方法吧：<br>
 
-```php
-
-	App::singleton('BillingNotifierInterface', function()
-	{
-	    return new SmsBillingNotifier;
-	});
-
+```
+App::singleton('BillingNotifierInterface', function()
+{
+    return new SmsBillingNotifier;
+});
 ```
 
 这样只要这个容器生成了这个提示器对象一次，在接下来的生成请求中容器都只会提供这同样的一个对象。<br>
 
 容器的instance方法和singleton方法很类似，区别是instance可以绑定一个已经存在的对象。然后容器每次返回的都是这个对象了。<br>
 
-```php
-
-	$notifier = new SmsBillingNotifier;
-	App::instance('BillingNotifierInterface', $notifier);
-
+```
+$notifier = new SmsBillingNotifier;
+App::instance('BillingNotifierInterface', $notifier);
 ```
 
 现在我们熟悉了容器的基础用法，让我们深入发掘它更强大的功能：依靠反射来处理类和接口。<br>

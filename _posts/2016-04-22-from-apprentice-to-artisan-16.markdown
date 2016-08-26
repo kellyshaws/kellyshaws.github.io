@@ -30,95 +30,89 @@ categories:
 
 考虑下列类：<br>
 
-```php
+```
+class OrderProcessor 
+{
+    public function __construct(BillerInterface $biller)
+    {
+        $this->biller = $biller;
+    }
+    public function process(Order $order)
+    {
+        $recent = $this->getRecentOrderCount($order);
+        if($recent > 0)
+        {
+            throw new Exception('Duplicate order likely.');
+        }
 
-	class OrderProcessor 
-	{
-	    public function __construct(BillerInterface $biller)
-	    {
-	        $this->biller = $biller;
-	    }
-	    public function process(Order $order)
-	    {
-	        $recent = $this->getRecentOrderCount($order);
-	        if($recent > 0)
-	        {
-	            throw new Exception('Duplicate order likely.');
-	        }
+        $this->biller->bill($order->account->id, $order->amount);
 
-	        $this->biller->bill($order->account->id, $order->amount);
-
-	        DB::table('orders')->insert(array(
-	            'account'    =>    $order->account->id,
-	            'amount'    =>    $order->amount,
-	            'created_at'=>    Carbon::now()
-	        ));
-	    }
-	    protected function getRecentOrderCount(Order $order)
-	    {
-	        $timestamp = Carbon::now()->subMinutes(5);
-	        return DB::table('orders')->where('account', $order->account->id)
-	                    ->where('created_at', '>=', $timestamps)->count();
-	    }
-	}
-
+        DB::table('orders')->insert(array(
+            'account'    =>    $order->account->id,
+            'amount'    =>    $order->amount,
+            'created_at'=>    Carbon::now()
+        ));
+    }
+    protected function getRecentOrderCount(Order $order)
+    {
+        $timestamp = Carbon::now()->subMinutes(5);
+        return DB::table('orders')->where('account', $order->account->id)
+                    ->where('created_at', '>=', $timestamps)->count();
+    }
+}
 ```
 
 上面这个类的职责是什么？很显然顾名思义，它是用来处理订单的。不过由于getRecentOrderCount这个方法的存在，这个类就有了在数据库中审查某帐号订单历史来看有没有重复订单的职责。这个额外的验证职责意味着当我们的存储方式改变或当订单验证规则改变时，我们的这个订单处理器也要跟着改变。<br>
 
 我们必须将这个职责抽离出来放到另外的类里面，比如放到OrderRepository：<br>
 
-```php
+```
+class OrderRepository 
+{
+    public function getRecentOrderCount(Account $account)
+    {
+        $timestamp = Carbon::now()->subMinutes(5);
+        return DB::table('orders')->where('account', $account->id)
+                                                ->where('created_at', '>=', $timestamp)
+                                                ->count();
+    }
 
-	class OrderRepository 
-	{
-	    public function getRecentOrderCount(Account $account)
-	    {
-	        $timestamp = Carbon::now()->subMinutes(5);
-	        return DB::table('orders')->where('account', $account->id)
-	                                                ->where('created_at', '>=', $timestamp)
-	                                                ->count();
-	    }
-
-	    public function logOrder(Order $order)
-	    {
-	        DB::table('orders')->insert(array(
-	            'account'    =>    $order->account->id,
-	            'amount'    =>    $order->amount,
-	            'created_at'=>    Carbon::now()
-	        ));
-	    }
-	}
-
+    public function logOrder(Order $order)
+    {
+        DB::table('orders')->insert(array(
+            'account'    =>    $order->account->id,
+            'amount'    =>    $order->amount,
+            'created_at'=>    Carbon::now()
+        ));
+    }
+}
 ```
 
 然后我们可以将我们的资料库\注入到OrderProcessor里，帮后者承担起对账户订单历史的处理责任：<br>
 
-```php
+```
+class OrderProcessor 
+{
+    public function __construct(BillerInterface $biller, OrderRepository $orders)
+    {
+        $this->biller = $biller;
+        $this->orders = $orders;
+    }
 
-	class OrderProcessor 
-	{
-	    public function __construct(BillerInterface $biller, OrderRepository $orders)
-	    {
-	        $this->biller = $biller;
-	        $this->orders = $orders;
-	    }
+    public function process(Order $order)
+    {
+        $recent = $this->orders->getRecentOrderCount($order->account);
 
-	    public function process(Order $order)
-	    {
-	        $recent = $this->orders->getRecentOrderCount($order->account);
+        if($recent > 0)
+        {
+            throw new Exception('Duplicate order likely.');
+        }
 
-	        if($recent > 0)
-	        {
-	            throw new Exception('Duplicate order likely.');
-	        }
+        $this->biller->bill($order->account->id, $order->amount);
 
-	        $this->biller->bill($order->account->id, $order->amount);
-
-	        $this->orders->logOrder($order);
-	    }
-	}
-
+        $this->orders->logOrder($order);
+    }
+}
 ```
 
 现在我们提取出了收集订单数据的责任，当读取和写入订单的方式改变时，我们不再需要修改OrderProcessor这个类了。我们的类的职责更加的专注和精确，这提供了一个更干净、更有表现力的代码，同时也是更容易维护的代码。<br>

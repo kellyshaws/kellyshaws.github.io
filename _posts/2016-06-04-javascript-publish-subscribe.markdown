@@ -15,8 +15,7 @@ Publish-Subscribe属于观察着模式，在很多框架上都用来解耦。<br
 
 下面，我用JavaScript来实现一个简单的Demo。<br>
 
-```javascript
-
+```
 PubSub = {handlers: {}};
 
 PubSub.on = function(eventType, handler) {
@@ -44,5 +43,4 @@ PubSub.on('click',function(e){
 });
 
 PubSub.emit('click','hello');
-
 ```

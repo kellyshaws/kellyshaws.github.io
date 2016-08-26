@@ -42,45 +42,39 @@ Laravel有好多Manager类用来管理基于驱动的组件的生成过程。基
 
 要扩展Laravel的缓存机制，我们将使用CacheManager里的extend方法来绑定我们自定义的缓存驱动。扩展其他的管理类也是类似的。比如，我们想注册一个新的缓存驱动，名叫"mongo"，代码可以这样写：<br>
 
-```php
-
-	Cache::extend('mongo', function($app)
-	{
-	    // Return Illuminate\Cache\Repository instance...
-	});
-
+```
+Cache::extend('mongo', function($app)
+{
+    // Return Illuminate\Cache\Repository instance...
+});
 ```
 
 extend方法的第一个参数是你要定义的驱动的名字。该名字对应着app/config/cache.php配置文件中的driver项。第二个参数是一个匿名函数（闭包），该匿名函数有一个$app参数是Illuminate\Foundation\Application的实例也是一个IoC容器，该匿名函数要返回一个Illuminate\Cache\Repository的实例。<br>
 
 要创建我们自己的缓存驱动，首先要实现Illuminate\Cache\StoreInterface接口。所以我们用MongoDB来实现的缓存驱动就可能看上去是这样：<br>
 
-```php
-
-	class MongoStore implements Illuminate\Cache\StoreInterface 
-	{
-	    public function get($key) {}
-	    public function put($key, $value, $minutes) {}
-	    public function increment($key, $value = 1) {}
-	    public function decrement($key, $value = 1) {}
-	    public function forever($key, $value) {}
-	    public function forget($key) {}
-	    public function flush() {}
-	}
-
+```
+class MongoStore implements Illuminate\Cache\StoreInterface 
+{
+    public function get($key) {}
+    public function put($key, $value, $minutes) {}
+    public function increment($key, $value = 1) {}
+    public function decrement($key, $value = 1) {}
+    public function forever($key, $value) {}
+    public function forget($key) {}
+    public function flush() {}
+}
 ```
 
 我们只需使用MongoDB链接来实现上面的每一个方法即可。一旦实现完毕，就可以照下面这样完成该驱动的注册：<br>
 
-```php
+```
+use Illuminate\Cache\Repository;
 
-	use Illuminate\Cache\Repository;
-
-	Cache::extend('mongo', function($app)
-	{
-	    return new Repository(new MongoStore);
-	}
-
+Cache::extend('mongo', function($app)
+{
+    return new Repository(new MongoStore);
+}
 ```
 
 你可以像上面的例子那样来创建Illuminate\Cache\Repository的实例。也就是说通常你不需要创建你自己的仓库类。<br>
@@ -99,29 +93,25 @@ extend方法的第一个参数是你要定义的驱动的名字。该名字对�
 
 扩展Laravel的会话机制和上文的缓存机制一样简单。和刚才一样，我们使用extend方法来注册自定义的代码：<br>
 
-```php
-
-	Session::extend('mongo', function($app)
-	{
-	    // Return implementation of SessionHandlerInterface
-	});
-
+```
+Session::extend('mongo', function($app)
+{
+    // Return implementation of SessionHandlerInterface
+});
 ```
 
 注意我们自定义的会话驱动实现的是SessionHandlerInterface接口。这个接口在PHP5.4以上版本才有。但如果你用的是PHP 5.3也别担心，Laravel会自动帮你定义这个接口的。该接口要实现的方法不多也不难。我们用MongoDB来实现就像下面这样：<br>
 
-```php
-
-	class MongoHandler implements SessionHandlerInterface 
-	{
-	    public function open($savePath, $sessionName) {}
-	    public function close() {}
-	    public function read($sessionId) {}
-	    public function write($sessionId, $data) {}
-	    public function destroy($sessionId) {}
-	    public function gc($lifetime) {}
-	}
-
+```
+class MongoHandler implements SessionHandlerInterface 
+{
+    public function open($savePath, $sessionName) {}
+    public function close() {}
+    public function read($sessionId) {}
+    public function write($sessionId, $data) {}
+    public function destroy($sessionId) {}
+    public function gc($lifetime) {}
+}
 ```
 
 这些方法不像刚才的StoreInterface接口定义的那么容易理解。我们来挨个简单讲讲这些方法都是干啥的：<br>
@@ -140,13 +130,11 @@ extend方法的第一个参数是你要定义的驱动的名字。该名字对�
 
 一旦SessionHandlerInterface实现完毕，我们就可以将其注册进会话管理器：<br>
 
-```php
-
-	Session::extend('mongo', function($app)
-	{
-	    return new MongoHandler;
-	});
-
+```
+Session::extend('mongo', function($app)
+{
+    return new MongoHandler;
+});
 ```	
 
 注册完毕后，我们就可以在app/config/session.php配置文件里使用mongo驱动了。<br>

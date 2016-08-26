@@ -17,13 +17,13 @@ JavaScript看似简单，实际上很复杂。下面列出一些简单的问题�
 
 定义一个函数spacify ,将一个字符串作为参数传入，然后返回一个字符串，不过该字符串相对原有传入参数的变化是字母与字母之间多了一个空格。<br>
 
-```javascript
+```
 spacify('hello world') // => 'h e l l o  w o r l d'  
 ```
 
 正确的答案如下，大多少会选择for循环，当然这并没有错。<br>
 
-```javascript
+```
 function spacify(str) {  
   return str.split('').join(' ');
 }
@@ -31,10 +31,11 @@ function spacify(str) {
 
 接下来，如何将这个函数直接作用在一个字符串对象上.<br>
 
-```javascript
+```
 'hello world'.spacify();
 ```
-```javascript
+
+```
 String.prototype.spacify = function(){  
   return this.split('').join(' ');
 };
@@ -44,13 +45,13 @@ String.prototype.spacify = function(){
 
 定义一个log函数。<br>
 
-```javascript
+```
 log('hello world');
 ```
 
 函数类似实现一个简单的控制台输出，在控制台输出传入的字符串。
 
-```javascript
+```
 function log(msg){  
   console.log(msg);
 }
@@ -58,7 +59,7 @@ function log(msg){
 
 如果传入多个参数依旧输出一个字符串。
 
-```javascript
+```
 log('hello', 'world');
 ```
 

@@ -18,17 +18,15 @@ Laravel框架的基础是一个功能强大的IoC container。为了真正理解
 
 首先来看看我们为何要使用依赖注入，它能带来什么好处。考虑下列代码：<br>
 
-```php
-
-	class UserController extends BaseController
+```
+class UserController extends BaseController
+{
+	public function getIndex()
 	{
-    	public function getIndex()
-    	{
-        	$users= User::all();
-        	return View::make('users.index', compact('users'));
-    	}
+    	$users= User::all();
+    	return View::make('users.index', compact('users'));
 	}
-
+}
 ```
 
 这段代码很简短，但我们要想测试这段代码的话就一定会和实际的数据库发生联系。也就是说，Eloquent ORM和该控制器有着紧耦合。如果不使用Eloquent ORM，不连接到实际数据库，我们就没办法运行或者测试这段代码。这段代码同时也违背了"关注分离"这个软件设计原则。简单讲：这个控制器知道的太多了。控制器不需要去了解数据是从哪儿来的，只要知道如何访问就行。控制器也不需要知道这数据是从MySQL或哪儿来的，只需要知道这数据目前是可用的。<br>
@@ -51,41 +49,37 @@ Laravel框架的基础是一个功能强大的IoC container。为了真正理解
 
 首先我们定义一个接口，然后实现该接口。<br>
 
-```php
+```
+interface UserRepositoryInterface
+{
+	public function all();
+}
 
-	interface UserRepositoryInterface
+class DbUserRepository implements UserRepositoryInterface
+{
+	public function all()
 	{
-    	public function all();
+    	return User::all()->toArray();
 	}
-   
-	class DbUserRepository implements UserRepositoryInterface
-	{
-    	public function all()
-    	{
-        	return User::all()->toArray();
-    	}
-	}
-
+}
 ```
 
 然后我们将该接口的实现注入我们的控制器。<br>
 
-```php
-
-	class UserController extends BaseController
-	{
-	    public function __construct(UserRepositoryInterface $users)
-	    {
-	        $this->users = $users;
-	    }
-	   
-	    public function getIndex()
-	    {
-	        $users=$this->users->all();
-	        return View::make('users.index', compact('users'));
-	    }
-	}
-
+```
+class UserController extends BaseController
+{
+    public function __construct(UserRepositoryInterface $users)
+    {
+        $this->users = $users;
+    }
+   
+    public function getIndex()
+    {
+        $users=$this->users->all();
+        return View::make('users.index', compact('users'));
+    }
+}
 ```	
 
 现在我们的控制器就完全和数据层面无关了。在这里无知是福！我们的数据可能来自MySQL，MongoDB或者Redis。我们的控制器不知道也不需要知道他们的区别。仅仅做出了这么小小的改变，我们就可以独立于数据层来测试Web层了，将来切换存储实现也会很容易。<br>
@@ -100,22 +94,20 @@ Laravel框架的基础是一个功能强大的IoC container。为了真正理解
 
 为了巩固学到的知识，咱们来写一个测试案例。首先，我们要模拟一个资料库然后绑定到应用的IoC容器里。然后，我们要保证控制器正确的调用了这个资料库：<br>
 
-```php
-
-	public function testIndexActionBindsUsersFromRepository()
-    {    
-        // Arrange...
-        $repository = Mockery::mock('UserRepositoryInterface');
-        $repository->shouldReceive('all')->once()->andReturn(array('foo'));
-        App::instance('UserRepositoryInterface', $repository);
-        // Act...
-        $response  = $this->action('GET', 'UserController@getIndex');
-         
-        // Assert...
-        $this->assertResponseOk();
-        $this->assertViewHas('users', array('foo'));
-    }
-
+```
+public function testIndexActionBindsUsersFromRepository()
+{    
+    // Arrange...
+    $repository = Mockery::mock('UserRepositoryInterface');
+    $repository->shouldReceive('all')->once()->andReturn(array('foo'));
+    App::instance('UserRepositoryInterface', $repository);
+    // Act...
+    $response  = $this->action('GET', 'UserController@getIndex');
+     
+    // Assert...
+    $this->assertResponseOk();
+    $this->assertViewHas('users', array('foo'));
+}
 ```
 
 <blockquote>

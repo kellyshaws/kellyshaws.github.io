@@ -26,7 +26,6 @@ hash(i) = hash(i-1) * 33 + str[i]
 ```
 
 ```
-<?php
 function hash($str) {
     // hash(i) = hash(i-1) * 33 + str[i]
     $hash = 0;

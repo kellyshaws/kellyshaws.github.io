@@ -25,31 +25,27 @@ categories:
 这样我们现在有了个app/QuickBill目录，它和应用目录下的其他目录如controllers还有views都是平级的。在QuickBill目录下我们还可以创建几个其他的目录。我们来在里面创建个Repositories和Billing目录。目录都创建好以后，别忘了在composer.json文件里加入PSR-4的自动载入机制：<br>
 
 ```
-
-	"psr-4":  {
-	    "QuickBill\\":    "app/QuickBill"
-	}
-
+"psr-4":  {
+    "QuickBill\\":    "app/QuickBill"
+}
 ```    
 
 现在我们把继承自Eloquent的模型类都放到QuickBill目录下面。这样我们就能很方便的以QuickBill\User,QuickBill\Payment的方式来使用它们。Repositories目录属于PaymentRepository 和UserRepository这种类，里面包含了所有对数据的访问功能比如getRecentPayments和getRichestUser。Billing目录应当包含调用第三方支付服务的类。整个目录结构应该类似这样：<br>
 
 ```
-
-	// app
-	    // QuickBill
-	        // Repositories
-	            -> UserRepository.php
-	            -> PaymentRepository.php
-	        // Billing
-	            -> BillerInterface.php
-	            -> StripeBiller.php
-	        // Notifications
-	            -> BillingNotifierInterface.php
-	            -> SmsBillingNotifier.php
-	        User.php
-	        Payment.php
-
+// app
+    // QuickBill
+        // Repositories
+            -> UserRepository.php
+            -> PaymentRepository.php
+        // Billing
+            -> BillerInterface.php
+            -> StripeBiller.php
+        // Notifications
+            -> BillingNotifierInterface.php
+            -> SmsBillingNotifier.php
+        User.php
+        Payment.php
 ```     
 
 <blockquote>
@@ -76,21 +72,19 @@ categories:
 
 举个例子。与其在你业务逻辑类里面直接获取网络请求，不如你直接把网络请求从控制器传给你的业务逻辑类。这个简单的改动将你的业务逻辑类和"网络"分离开了，并且不必担心怎么去模拟网络请求，你的业务逻辑类就可以简单的测试了：<br>
 
-```php
-
-	class BillingController extends BaseController
-	{
-	    public function __construct(BillerInterface $biller)
-	    {
-	        $this->biller = $biller;
-	    }
-	    public function postCharge()
-	    {
-	        $this->biller->chargeAccount(Auth::user(), Input::get('amount'));
-	        return View::make('charge.success');
-	    }
-	}
-
+```
+class BillingController extends BaseController
+{
+    public function __construct(BillerInterface $biller)
+    {
+        $this->biller = $biller;
+    }
+    public function postCharge()
+    {
+        $this->biller->chargeAccount(Auth::user(), Input::get('amount'));
+        return View::make('charge.success');
+    }
+}
 ```
 
 现在chargeAccount方法更容易测试了。我们把Request和Input从BillingInterface里提出来，然后在控制器里把方法需要的支付金额直接传过去。<br>

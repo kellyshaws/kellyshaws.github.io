@@ -14,8 +14,7 @@ categories:
 
 我们来看看laravel Eloquent save的时候到底触发了哪些事件 <br>
 
-```php 
-
+``` 
 Illuminate/Database/Eloquent/Model.php
 
 public function save(array $options = [])
@@ -46,7 +45,6 @@ public function save(array $options = [])
 
 	return $saved;
 }
-
  ```
 
 首先触发的当然是saving，如果saving返回的是false，那么save就失败了，返回false <br>
@@ -54,8 +52,7 @@ public function save(array $options = [])
 接着如果$this->exists，就是这个model不是新创建的，那么就需要进行更新操作 <br>
 
 
-```php 
-
+``` 
 protected function performUpdate(Builder $query, 
 	array $options = [])
 {
@@ -88,8 +85,6 @@ protected function performUpdate(Builder $query,
 
 	return true;
 }
-
-
  ```
 
 - 首先如果这个模型dirty了，也就是脏了，也就是有属性改变了,那么才需要更新

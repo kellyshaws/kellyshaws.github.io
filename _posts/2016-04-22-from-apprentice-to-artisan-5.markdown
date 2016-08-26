@@ -16,39 +16,33 @@ categories:
 
 在我成为PHP程序员之前，我是写.NET的。你觉得我是M么？在.NET里可到处都是接口。事实上很多接口是定义在.NET框架核心中了，一个好的理由是：很多.NET语言比如C#和VB.NET都是强类型的。也就是说，你在给一个函数传值，要么传原生类型对象，要么就必须给这个对象一个明确的类型定义。比如考虑以下C#方法：<br>
 
-```c#
-
-	public int BillUser(User user)
-	{
-	    this.biller.bill(user.GetId(), this.amount)
-	}
-
+```
+public int BillUser(User user)
+{
+    this.biller.bill(user.GetId(), this.amount)
+}
 ```
 
 注意在这里，我们不仅要定义传进去的参数是什么类型的，还要定义这个方法返回值是什么类型的。C#鼓励类型安全。除了指定的User对象，它不允许我们传递其他类型的对象到BillUser方法中。<br>
 
 然而PHP是一种鸭子类型的语言。所谓鸭子类型的语言，一个对象可用的方法取决于使用方式，而非这个方法从哪儿继承或实现。来看个例子：<br>
 
-```php
-
-	public function billUser($user)
-	{
-	    $this->biller->bill($user->getId(), $this->amount);
-	}
-
+```
+public function billUser($user)
+{
+    $this->biller->bill($user->getId(), $this->amount);
+}
 ```
 
 在PHP里面，我们不必告诉一个方法需要什么类型的参数。实际上我们传递任何类型的对象都可以，只要这个对象能响应getId的调用。这里有个关于鸭子类型的解释：如果一个东西看起来像个鸭子，叫声也像鸭子叫，那他就是个鸭子。换言之在程序里，一个对象看上去是个User，方法响应也像个User，那他就是个User。<br>
 
 不过PHP到底有没有任何强类型功能呢？当然有！PHP混合了强类型和弱类型的结构。为了说明这点，咱们来重写一下billUser方法：<br>
 
-```php
-
-	public function billUser(User $user)
-	{
-	    $this->biller->bill($user->getId(), $amount);
-	}
-
+```
+public function billUser(User $user)
+{
+    $this->biller->bill($user->getId(), $amount);
+}
 ```
 
 给方法加上了加上了User类型提示后，我们可以确信的说所有传入billUser方法的参数，都是User类或是继承自User类的一个实例。<br>
@@ -71,44 +65,38 @@ categories:
 
 为了说明在强类型语言中接口的灵活性，咱们来写一个酒店客房预订的代码。考虑以下接口：<br>
 
-```php
-
-	interface ProviderInterface
-	{
-	    public function getLowestPrice($location);
-	    public function book($location);
-	}
-
+```
+interface ProviderInterface
+{
+    public function getLowestPrice($location);
+    public function book($location);
+}
 ```
 
 当用户订房间时，我们需要将此事记录在系统里。所以在User类里面写点方法：<br>
 
-```php
-
-	class User
-	{
-	    public function bookLocation(ProviderInterface $provider, $location)
-	    {
-	        $amountCharged = $provider->book($location);
-	        $this->logBookedLocation($location, $amountCharged);
-	    }
+```
+class User
+{
+    public function bookLocation(ProviderInterface $provider, $location)
+    {
+        $amountCharged = $provider->book($location);
+        $this->logBookedLocation($location, $amountCharged);
     }
-
+}
 ```
 
 因为我们写出了ProviderInterface的类型提示，该User类的就可以放心大胆的认为book方法是可以调用的。这使得bookLocation方法有了重用性。当用户想要换一家酒店提供商时也就更灵活。最后咱们来写点代码来强化他的灵活性。<br>
 
-```php
+```
+$location = 'Hilton, Dallas';
 
-	$location = 'Hilton, Dallas';
+$cheapestProvider = $this->findCheapest($location, array(
+    new PricelineProvider,
+    new OrbitzProvider,
+));
 
-	$cheapestProvider = $this->findCheapest($location, array(
-	    new PricelineProvider,
-	    new OrbitzProvider,
-	));
-
-	$user->bookLocation($cheapestProvider, $location);
-
+$user->bookLocation($cheapestProvider, $location);
 ```
 
 太棒了！不管哪家是最便宜的，我们都能够将他传入User对象来预订房间了。由于User对象只需要要有一个符合ProviderInterface约定的实例就可以预订房间，所以未来有更多的酒店供应商我们的代码也可以很好的工作。<br>

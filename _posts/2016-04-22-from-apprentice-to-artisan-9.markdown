@@ -16,14 +16,12 @@ categories:
 
 在启动方法里面，你想做什么都可以：注册事件监听，引入路由文件，注册过滤器，或者其他你能想象到的事儿。再强调一下，要发挥服务提供者的管理功能。可能你想将相关的多个事件监听归为一组？将他们放到一个服务提供者的boot方法里，这会很管用的！或者你也可以引入单独的events、routesPHP文件：<br>
 
-```php
-
-	public function boot()
-	{
-	    require_once __DIR__.'/events.php';
-	    require_once __DIR__.'/routes.php';
-	}
-
+```
+public function boot()
+{
+    require_once __DIR__.'/events.php';
+    require_once __DIR__.'/routes.php';
+}
 ```
 
 我们已经学习了依赖注入以及如何使用服务提供者来组织管理我们的项目。这样我们的Laravel应用就有了一个很好的基础，它结构优美并且易于维护和测试。接下来，我们将探索Laravel框架本身是如何使用服务提供者的，并且深究其原理！<br>
