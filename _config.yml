@@ -4,7 +4,7 @@
 baseurl: 
 
 # Site live URL
-url: http://kellyshaws.github.io
+url: https://kellyshaws.github.io
 
 # Localhost 
 # url: http://127.0.0.1:4000  
@@ -23,7 +23,7 @@ harmony:
   author: # Author details
     name: Kelly Shaw
     email: kelly@gmail.com
-    url: http://kellyshaws.github.io
+    url: https://kellyshaws.github.io
 
   # Google Analytics key, leave blank to ignore
   google_analytics_key: UA-83232423-1
