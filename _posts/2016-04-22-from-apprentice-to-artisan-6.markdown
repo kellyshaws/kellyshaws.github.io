@@ -30,6 +30,7 @@ class OrderController
     {
         $this->orders = $orders;
     }
+    
     public function getRecent()
     {
         $recent = $this->orders->getMostRecent(Auth::user());

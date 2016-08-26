@@ -79,6 +79,7 @@ class BillingController extends BaseController
     {
         $this->biller = $biller;
     }
+    
     public function postCharge()
     {
         $this->biller->chargeAccount(Auth::user(), Input::get('amount'));

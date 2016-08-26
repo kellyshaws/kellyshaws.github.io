@@ -35,6 +35,7 @@ class StripeBiller implements BillerInterface
     {
         $this->notifier = $notifier;
     }
+    
     public function bill(array $user, $amount)
     {
         // Bill the user via Stripe...

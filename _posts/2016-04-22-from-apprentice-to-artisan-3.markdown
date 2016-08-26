@@ -57,7 +57,6 @@ App::bind('BillingNotifierInterface', function()
 ```
 class UserController extends BaseController
 {
-
     public function __construct(BillerInterface $biller)
     {
         $this->biller = $biller;

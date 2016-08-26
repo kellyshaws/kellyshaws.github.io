@@ -62,6 +62,7 @@ class Contact extends Eloquent
     {
         return $this->attributes['name'];
     }
+    
     public function getEmailAttribute()
     {
         return $this->attributes['email'];

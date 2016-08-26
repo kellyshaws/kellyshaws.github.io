@@ -45,7 +45,6 @@ class MysqlAdapter
 
 class App
 {
-
 	public static function run ($instance, $method)
 	{
     	if (! method_exists($instance, $method)) {

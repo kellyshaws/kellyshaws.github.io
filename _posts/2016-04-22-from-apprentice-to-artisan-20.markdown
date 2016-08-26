@@ -31,10 +31,12 @@ class Authenticator
     {
         $this->db = $db;
     }
+
     public function findUser($id)
     {
         return $this->db->exec('select * from users where id = ?', array($id));
     }
+
     public function authenticate($credentials)
     {
         // Authenticate the user...
@@ -50,6 +52,7 @@ class Authenticator
 interface UserProviderInterface 
 {
     public function find($id);
+
     public function findByUsername($username);
 }
 ```
@@ -64,10 +67,12 @@ class Authenticator
         $this->hash = $hash;
         $this->users = $users;
     }
+
     public function findUser($id)
     {
         return $this->users->find($id);
     }
+
     public function authenticate($credentials)
     {
         $user = $this->users->findByUsername($credentials['username']);
@@ -87,10 +92,12 @@ class RedisUserProvider implements UserProviderInterface
     {
         $this->redis = $redis;
     }
+
     public function find($id)
     {
         $this->redis->get('users:'.$id);
     }
+    
     public function findByUsername($username)
     {
         $id = $this->redis->get('user:id:'.$username);

@@ -83,6 +83,7 @@ class SendSMS
         $this->users = $users;
         $this->courier = $courier;
     }
+    
     public function fire($job, $data)
     {
         $user = $this->users->find($data['user']['id']);

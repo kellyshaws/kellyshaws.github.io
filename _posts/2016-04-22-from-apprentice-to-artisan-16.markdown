@@ -37,6 +37,7 @@ class OrderProcessor
     {
         $this->biller = $biller;
     }
+
     public function process(Order $order)
     {
         $recent = $this->getRecentOrderCount($order);
@@ -53,6 +54,7 @@ class OrderProcessor
             'created_at'=>    Carbon::now()
         ));
     }
+    
     protected function getRecentOrderCount(Order $order)
     {
         $timestamp = Carbon::now()->subMinutes(5);

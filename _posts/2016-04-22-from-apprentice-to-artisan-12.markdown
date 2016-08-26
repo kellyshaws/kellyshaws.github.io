@@ -64,7 +64,8 @@ namespace QuickBill\Providers;
 
 use App, Illuminate\Support\ServiceProvider;
 
-class QuickBillErrorProvider extends ServiceProvider {
+class QuickBillErrorProvider extends ServiceProvider 
+{
     public function register()
     {    
         //

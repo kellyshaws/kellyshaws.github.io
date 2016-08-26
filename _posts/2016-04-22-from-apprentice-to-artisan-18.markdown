@@ -38,6 +38,7 @@ public function process(Order $order)
 class DatabaseOrderRepository implements OrderRepositoryInterface 
 {
     protected $connection;
+    
     public function connect($username, $password)
     {
         $this->connection = new DatabaseConnection($username, $password);
@@ -75,14 +76,17 @@ public function process(Order $order)
 class DatabaseOrderRepository implements OrderRepositoryInterface 
 {
     protected $connector;
+
     public function __construct(DatabaseConnector $connector)
     {
         $this->connector = $connector;
     }
+
     public function connect()
     {
         return $this->connector->bootConnection();
     }
+    
     public function logOrder(Order $order)
     {
         $connection = $this->connect();

@@ -69,6 +69,7 @@ public function billUser(User $user)
 interface ProviderInterface
 {
     public function getLowestPrice($location);
+    
     public function book($location);
 }
 ```

@@ -36,6 +36,7 @@ class PusherEventPusher implements EventPusherInterface
     {
         $this->pusher = $pusher;
     }
+    
     public function push($message, array $data = array())
     {
         // Push message via the Pusher SDK...

@@ -28,8 +28,7 @@ categories:
 ```
 $recent = $this->orders->getRecentOrderCount($order->account);
 
-if($recent > 0)
-{
+if($recent > 0) {
     throw new Exception('Duplicate order likely.');
 }
 ```
@@ -54,6 +53,7 @@ class RecentOrderValidator implements OrderValidatorInterface
     {
         $this->orders = $orders;
     }
+    
     public function validate(Order $order)
     {
         $recent = $this->orders->getRecentOrderCount($order->account);
