@@ -13,7 +13,7 @@ categories:
 
 S.O.L.I.D. - it is prinpliples of class design, which facilitate the work of the programmer.All programmers must know how to use them. Using of this principles makes it easier to support and expand project.<br>
 
-##The single responsibility principle##
+The single responsibility principle
 
 Definition: should not be more than one reason to change the class <br>
 
@@ -73,7 +73,7 @@ class OrderManagementService {
 }
 ```
 
-##The open/closed principle##
+The open/closed principle
 
 Definition: software entities (classes, modules, functions, etc.) should be open for extension, but closed for modifications.<br>
 
@@ -170,7 +170,7 @@ class MailService {
 
 Now we can change logger logic without changin of MailService. There are many design patterns that help us to extend code without changing it. For instance the Decorator pattern help us to follow Open Close principle. Also the Factory Method or the Observer pattern might be used to design an application easy to change with minimum changes in the existing code.<br>
 
-##The Liskov Substitution Principle##
+The Liskov Substitution Principle
 
 Definition: Derived classes must be substitutable for their base classes. Functions that use pointers or references to base classes must be able to use objects of derived classes without knowing it.<br>
 
@@ -207,7 +207,7 @@ public void testDoubleList() {
 
 Behaviour of DoubleList is different from any implementation of List interface. It is a violation of LSP. So, to avoid unexpected behaviour, we need to make our own interface, as example DoubleList. This interface will be implemented by any class with behaviour in which elements will be doubled.<br>
 
-##The Interface Segregation Principle##
+The Interface Segregation Principle
 
 Definition: clients should not be forced to depend upon interfaces that they don’t use.<br>
 
@@ -318,7 +318,7 @@ class Manager {
 
 Adapter pattern can be used to segrate already fat interfaces.<br>
 
-##The Dependency Inversion Principle##
+The Dependency Inversion Principle
 
 Definitions: A. High-level modules should not depend on low-level modules. Both should depend on abstractions. B. Abstractions should not depend on details. Details should depend on abstractions.<br>
 
