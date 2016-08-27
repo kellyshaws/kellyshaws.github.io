@@ -11,8 +11,6 @@ categories:
 - Design pattern
 ---
 
-##Definition##
-
 S.O.L.I.D. - it is prinpliples of class design, which facilitate the work of the programmer.All programmers must know how to use them. Using of this principles makes it easier to support and expand project.<br>
 
 ##The single responsibility principle##
