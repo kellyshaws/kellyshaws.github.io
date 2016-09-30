@@ -14,7 +14,7 @@ categories:
 
 Laravel框架的基础是一个功能强大的IoC container。为了真正理解本框架，需要好好掌握该容器。然而我们需要了解，控制反转容器只是一种用于方便实现"依赖注入"的工具。但要实现依赖注入并不一定需要控制反转容器只是用容器会更方便和容易。<br>
 
-###遇到的问题###
+##遇到的问题
 
 首先来看看我们为何要使用依赖注入，它能带来什么好处。考虑下列代码：<br>
 
@@ -45,22 +45,22 @@ class UserController extends BaseController
 
 那么我们就别再将控制器和Eloquent耦合在一起了。咱们注入一个资料库类。<br>
 
-###建立约定###
+##建立约定
 
 首先我们定义一个接口，然后实现该接口。<br>
 
 ```
 interface UserRepositoryInterface
 {
-	public function all();
+    public function all();
 }
 
 class DbUserRepository implements UserRepositoryInterface
 {
-	public function all()
-	{
+    public function all()
+    {
     	return User::all()->toArray();
-	}
+    }
 }
 ```
 
