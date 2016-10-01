@@ -3,12 +3,10 @@ layout: post
 title:  "From Apprentice To Artisan --依赖注入"
 date:   2016-04-21 13:00:15
 description: "From Apprentice To Artisan --Dependency Injection"
-permalink: post/dependency-injection
+permalink: post/dependency-injection-the-problem
 disqus:
-  id: dependency-injection
+  id: dependency-injection-the-problem
 categories:
-- blog
-- php
 - laravel
 ---
 
@@ -33,9 +31,9 @@ class UserController extends BaseController
 
 <blockquote>
 <p>
-	关注分离<br>
+    关注分离<br>
 
-	每一个类都应该有单独的职责，并且该职责应完全被这个类封装。<br>
+    每一个类都应该有单独的职责，并且该职责应完全被这个类封装。<br>
 </p>
 </blockquote>
 
@@ -86,9 +84,9 @@ class UserController extends BaseController
 
 <blockquote>
 <p>
-	严守边界<br>
+    严守边界<br>
 
-	记得要保持清晰的责任边界。控制器和路由是作为HTTP和你的应用程序之间的中间件来用的。当编写大型应用程序时，不要将你的领域逻辑混杂在其中。<br>
+    记得要保持清晰的责任边界。控制器和路由是作为HTTP和你的应用程序之间的中间件来用的。当编写大型应用程序时，不要将你的领域逻辑混杂在其中。<br>
 </p>
 </blockquote>
 
@@ -99,7 +97,7 @@ public function testIndexActionBindsUsersFromRepository()
 {    
     // Arrange...
     $repository = Mockery::mock('UserRepositoryInterface');
-    $repository->shouldReceive('all')->once()->andReturn(array('foo'));
+    $repository->shouldReceive('all')->once()->andReturn(['foo']);
     App::instance('UserRepositoryInterface', $repository);
     // Act...
     $response  = $this->action('GET', 'UserController@getIndex');
@@ -112,8 +110,8 @@ public function testIndexActionBindsUsersFromRepository()
 
 <blockquote>
 <p>
-	你在模仿我么？<br>
+    你在模仿我么？<br>
 
-	在上面的例子里，我们使用了名为Mockery的模仿库。这个库提供了一套整洁且富有表达力的方法，用来模仿你写的类。Mockery可以通过Composer安装。<br>
+    在上面的例子里，我们使用了名为Mockery的模仿库。这个库提供了一套整洁且富有表达力的方法，用来模仿你写的类。Mockery可以通过Composer安装。<br>
 </p>
 </blockquote>
