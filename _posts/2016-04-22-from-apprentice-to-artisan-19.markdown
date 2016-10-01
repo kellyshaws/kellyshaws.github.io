@@ -7,8 +7,6 @@ permalink: post/design-pattern-interface-segregation-principle
 disqus:
   id: design-pattern-interface-segregation-principle
 categories:
-- blog
-- php
 - laravel
 ---
 
@@ -19,11 +17,11 @@ categories:
 臃肿的接口，有着很多不是所有的实现类都需要的方法。与其写这样的接口，不如将其拆分成多个小巧的接口，里面的方法都是各自领域所需要的。这样将臃肿接口拆成小巧、功能集中的接口后，我们就可以使用小接口来编码，而不必为我们不需要的功能买单。<br>
 
 <blockquote>
-	<p>
-		接口隔离原则<br>
+<p>
+    接口隔离原则<br>
 
-		该原则规定，一个接口的一个实现类，不应该去实现那些自己用不到的方法。如果需要，那就是接口设计有问题，违背了接口隔离原则。<br>
-	</p>
+    该原则规定，一个接口的一个实现类，不应该去实现那些自己用不到的方法。如果需要，那就是接口设计有问题，违背了接口隔离原则。<br>
+</p>
 </blockquote>
 
 为了说明该原则，我们来思考一个关于会话处理的类库。实际上我们将要考察PHP自己的SessionHandlerInterface。下面是该接口定义的方法，他们是从PHP 5.4版才开始有的：<br>
