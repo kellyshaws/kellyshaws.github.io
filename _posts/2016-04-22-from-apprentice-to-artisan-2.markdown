@@ -3,12 +3,10 @@ layout: post
 title:  "From Apprentice To Artisan --依赖注入"
 date:   2016-04-21 13:10:15
 description: "From Apprentice To Artisan --Dependency Injection"
-permalink: post/dependency-injection-2
+permalink: post/taking-it-further
 disqus:
-  id: dependency-injection-2
+  id: taking-it-further
 categories:
-- blog
-- php
 - laravel
 ---
 
@@ -48,9 +46,9 @@ class StripeBiller implements BillerInterface
 
 <blockquote>
 <p>
-	使用接口<br>
+    使用接口<br>
 
-	写接口可能看上去挺麻烦，但实际上能加速你的开发。你不用实现任何接口，就能使用模拟库来模拟你的接口，进而测试整个后台逻辑！<br>
+    写接口可能看上去挺麻烦，但实际上能加速你的开发。你不用实现任何接口，就能使用模拟库来模拟你的接口，进而测试整个后台逻辑！<br>
 </p>
 </blockquote>
 
@@ -65,7 +63,7 @@ $biller = new StripeBiller(new SmsNotifier);
 
 那IoC容器呢？难道依赖注入不需要IoC容器么？当然不需要！在接下来的章节里面你会了解到，容器使得依赖注入更易于管理，但是容器不是依赖注入所必须的。只要遵循本章提出的原则，你可以在你任何的项目里面实施依赖注入，而不必管该项目是否使用了容器。<br>
 
-##太像Java了？
+##太像Java了
 
 有人会说使用接口让PHP代码看上去太像Java了——即代码太罗嗦了——你必须定义接口然后实现它，要多按好多下键盘。<br>
 
@@ -73,4 +71,4 @@ $biller = new StripeBiller(new SmsNotifier);
 
 在大型应用中接口是很有帮助的。和提升的代码灵活性、可测试性比起来，多敲键盘费的功夫就微不足道了。当你迅速的切换了代码实现的时候，你的经理一定会被你的神速吓一跳的。你也可以写出更适应变化的代码。<br>
 
-总而言之，记住本书提倡"简单"架构。如果你在写小程序的时候无法遵守接口原则，别觉得不好意思。要记住我们写代码是要快乐的写。如果你不喜欢写接口，那就先简单的写代码吧。日后再精进即可。<br>
+总而言之，记住本书提倡简单架构。如果你在写小程序的时候无法遵守接口原则，别觉得不好意思。要记住我们写代码是要快乐的写。如果你不喜欢写接口，那就先简单的写代码吧。日后再精进即可。<br>
