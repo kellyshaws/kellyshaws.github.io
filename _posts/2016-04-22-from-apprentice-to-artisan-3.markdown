@@ -7,19 +7,17 @@ permalink: post/the-ioc-container
 disqus:
   id: the-ioc-container
 categories:
-- blog
-- php
 - laravel
 ---
 
 我们已经学习了依赖注入，接下来咱们一起来探索IoC Container。IoC容器可以使你更容易管理依赖注入，Laravel框架拥有一个很强大的IoC容器。Laravel的核心就是这个IoC容器，这个IoC容器使得框架各个组件能很好的在一起工作。事实上Laravel的Application类就是继承自Container类！<br>
 
 <blockquote>
-	<p>
-		控制反转容器<br>
+<p>
+    控制反转容器<br>
 
-		控制反转容器使得依赖注入更方便。当一个类或接口在容器里定义以后，如何处理它们——如何在应用中管理、注入这些对象？<br>
-	</p>
+    控制反转容器使得依赖注入更方便。当一个类或接口在容器里定义以后，如何处理它们——如何在应用中管理、注入这些对象？<br>
+</p>
 </blockquote>
 
 在Laravel应用里，你可以通过App来访问控制反转容器。容器有很多方法，不过我们从最基础的开始。让我们继续使用上一章写的BillerInterface和BillingNotifierInterface，且假设我们使用了Stripe来进行支付操作。我们可以将Stripe的支付实现绑定到容器里，就像这样：<br>
@@ -43,11 +41,11 @@ App::bind('BillingNotifierInterface', function()
 如你所见，这个容器就是个用来存储各种绑定的地方。一旦一个类在容器里绑定了以后，我们可以很容易的在应用的任何位置调用它。我们甚至可以在bind函数内写另外的bind。<br>
 
 <blockquote>
-	<p>
-		Have Acne?<br>
+<p>
+    Have Acne?<br>
 
-		Laravel框架的Illuminate容器和另一个名为Pimple的IoC容器是可替换的。所以如果你之前用的是Pimple，你尽可以大胆的升级为Illuminate Container，后者还有更多新功能！<br>
-	</p>
+    Laravel框架的Illuminate容器和另一个名为Pimple的IoC容器是可替换的。所以如果你之前用的是Pimple，你尽可以大胆的升级为Illuminate Container，后者还有更多新功能！<br>
+</p>
 </blockquote>
 
 一旦我们使用了容器，切换接口的实现就是一行代码的事儿。<br>
@@ -99,9 +97,9 @@ App::instance('BillingNotifierInterface', $notifier);
 现在我们熟悉了容器的基础用法，让我们深入发掘它更强大的功能：依靠反射来处理类和接口。<br>
 
 <blockquote>
-	<p>
-		容器独立运行<br>
+<p>
+    容器独立运行<br>
 
-		你的项目没有使用Laravel？但你依然可以使用Laravel的IoC容器！只要用Composer安装了illuminate/container包就可以了。<br>
-	</p>
+    你的项目没有使用Laravel？但你依然可以使用Laravel的IoC容器！只要用Composer安装了illuminate/container包就可以了。<br>
+</p>
 </blockquote>
