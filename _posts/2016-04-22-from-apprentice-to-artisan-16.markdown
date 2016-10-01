@@ -7,8 +7,6 @@ permalink: post/design-pattern-single-responsibility-principle
 disqus:
   id: design-pattern-single-responsibility-principle
 categories:
-- blog
-- php
 - laravel
 ---
 
