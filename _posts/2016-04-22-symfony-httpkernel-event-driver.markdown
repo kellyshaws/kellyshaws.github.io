@@ -7,8 +7,6 @@ permalink: post/symfony2-httpkernel-event-driver
 disqus:
   id: symfony2-httpkernel-event-driver
 categories:
-- blog
-- php
 - symfony
 ---
 
@@ -19,7 +17,7 @@ Symfony2框架层和应用层的工作都是在 HttpKernel::handle()中完成，
 
 ![Symfony 截图]({{ site.baseurl }}/uploads/2016/0422/1.png)
 
-##kernel.request Event##
+##kernel.request Event
 实现kernel.request事件目的是为了添加更多信息到Request对象，或者得到返回的Response对象。<br>
 kernel.request事件是HttpKernel::handle()调度的第一个事件，那么监听该事件的多个监听器就会被执行。
 
@@ -35,7 +33,7 @@ kernel.request事件是HttpKernel::handle()调度的第一个事件，那么监�
     </p>
 </blockquote>
 
-##Resolve the Controller##
+##Resolve the Controller
 
 假设实现kernel.request事 件的时候没有创建和返回Response对象，那么下一步就是确定、解析controller和controller需要的参数。controller部 分是应用层的最后一个堡垒，负责创建和返回包含一个特定页面的Response对象。如何确定被请求的controller完全取决于应用程序，这个工作有controller解析器来完成——一个是实现ControllerResolverInterface的类，同时也是HttpKernel构造函数的一个参数。
 
@@ -61,7 +59,7 @@ HttpKernel::handle()首先调用ControllerResolver的getController()方法，并
 	</p>
 </blockquote>
 
-##The kernel.controller Event##
+##The kernel.controller Event
 
 kernel.controller事件是在controller被执行前初始化一些信息或者改变controller对象。<br>
 被调用的controller确定之后，HttpKernel::handle()就会调度kernel.controller事件。在系统的某部分被确定后（例如：controller、路由信息等）但是这些部分被执行前，监听kernel.controller事件的监听器就会运行了。
@@ -76,7 +74,7 @@ kernel.controller事件是在controller被执行前初始化一些信息或者�
 	</p>
 </blockquote>
 
-##获得controller的参数##
+##获得controller的参数
 
 getAttributes()方法是返回一个参数数组，这个参数数组会被传递给controller，我们也可以自定义该方法，也可以使用Symfony框架内置的。
 
@@ -92,7 +90,7 @@ getAttributes()方法是返回一个参数数组，这个参数数组会被传�
 	</p>
 </blockquote>
 
-##调用Controller##
+##调用Controller
 
 这一步，controller就会被执行。<br>
 controller会创建包含特定页面或者json的Response对象，这也是应用层的最后一个步骤。
@@ -102,12 +100,12 @@ controller会创建包含特定页面或者json的Response对象，这也是应�
  如果controller返回的是Response对象，那么下一步kernel.response事件就会触发，否者kernel.view事件就会被触发。
 
 <blockquote>
-    <p>
+<p>
     controller必须要有返回值，如果返回null，程序会报错。
-	</p>
+</p>
 </blockquote>
 
-##kernel.view事件##
+##kernel.view事件
 
 controller返回值不是Response对象的时候被触发。
 
@@ -126,7 +124,7 @@ controller返回值不是Response对象的时候被触发。
 	</p>
 </blockquote>
 
-##kernel.response 事件##
+##kernel.response 事件
 
 在发送Response对象到客户端前修改它。<br>
 kernel的目的是把Request对象转换成为Response对象。Response对象可能是在kernel.request事件中创建，可能是由controller返回，又或者是由监听kernel.view事件的监听器返回。<br>
@@ -136,11 +134,11 @@ kernel.response事件完成后，HttpKernel::handle()返回最终的Response对�
 <blockquote>
     <p>
     Symfony框架实现kernel.response事件<br>
-	Symfony框架内置几个监听器监 听kernel.response事件，更多的可以通过开发者社区获得。例如：在dev开发环境下WebDebugToolbarListener向页面 的底部注入javascript代码，debug工具条就会显示出来。还有另一个监听器，ContextListener序列化当前用户的信息保存到 session中，下一次请求的时候直接在session中重载用户信息。
+    Symfony框架内置几个监听器监 听kernel.response事件，更多的可以通过开发者社区获得。例如：在dev开发环境下WebDebugToolbarListener向页面 的底部注入javascript代码，debug工具条就会显示出来。还有另一个监听器，ContextListener序列化当前用户的信息保存到 session中，下一次请求的时候直接在session中重载用户信息。
 	</p>
 </blockquote>
 
-##kernel.terminate事件##
+##kernel.terminate事件
 
 监听该事件的监听器通常都是处理一些耗时的后台程序。<br>
 HttpKernel进程的最后一个事件是kernel.terminate事件，而且该事件的触发是在HttpKernel::handle()方法之后，并且响应的内容已经发送给用户。
@@ -151,13 +149,13 @@ HttpKernel进程的最后一个事件是kernel.terminate事件，而且该事件
 
 ![Symfony 截图]({{ site.baseurl }}/uploads/2016/0422/10.png)
 
-##Symfony框架一个完整的工作流程##
+##Symfony框架一个完整的工作流程
 
 使用HttpKernel组件的时候，我们不需要实现任何监听器添加到内核事件中，也不需要实现controller resolver。HTTp组件自带的监听器和controller resolver就能够正常工作了：
 
 ![Symfony 截图]({{ site.baseurl }}/uploads/2016/0422/11.png)
 
-##子请求##
+##子请求
 除了把“main request”传入到HttpKernel::handle之外，还可以把所谓的“sub request”传入HttpKernel::handle中。子请求看起来和其它的请求差不多，不同的是，一般的请求是渲染完整的一个页面，而子请求渲染的是一个页面的一部分。通常我们都是在controller里面创建一个子请求（或者在模板里面创建）。
 
 ![Symfony 截图]({{ site.baseurl }}/uploads/2016/0422/12.png)
