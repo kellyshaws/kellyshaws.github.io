@@ -7,7 +7,6 @@ permalink: post/jwt-token
 disqus:
   id: jwt-token
 categories:
-- blog
 - token
 ---
 
