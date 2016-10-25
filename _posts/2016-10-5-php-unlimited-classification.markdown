@@ -12,9 +12,13 @@ categories:
 ---
 
 ```
-function tree($array, $id = 0, $primary = 'id', $parent = 'parent_parent')
+function tree($array,
+        $id = 0,
+        $primary = 'id',
+        $parent = 'parent_parent'
+)
 {
-	$subArray = [];
+    $subArray = [];
 	foreach ($array as $key => $value) {
 		if ($id == $value[$parent]) {
 			$subArray[$key] = $value;
