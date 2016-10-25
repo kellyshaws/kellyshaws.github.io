@@ -22,30 +22,22 @@ public function save(array $options = [])
 	$query = $this->newQueryWithoutScopes();
 
 	if ($this->fireModelEvent('saving') === false) {
-	
-	     return false;
-	     
+	    return false;
 	}
 
 	if ($this->exists) {
-	
 	    $saved = $this->performUpdate($query, $options);
-	         
 	} else {
-	
 	    $saved = $this->performInsert($query, $options);
-	         
 	}
 
 	if ($saved) {
-	
 	    $this->finishSave($options);
-	    
 	}
 
 	return $saved;
 }
- ```
+```
 
 首先触发的当然是saving，如果saving返回的是false，那么save就失败了，返回false <br>
 
@@ -60,27 +52,27 @@ protected function performUpdate(Builder $query,
 
 	if (count($dirty) > 0) {
 
-	     if ($this->fireModelEvent('updating') === false) {
+	    if ($this->fireModelEvent('updating') === false) {
 	         
-	         return false;
+	        return false;
 	            
 	     }
 
-	     if ($this->timestamps && 
-	         	Arr::get($options, 'timestamps', true)) {
+	    if ($this->timestamps && 
+	        Arr::get($options, 'timestamps', true)) {
 	         	
-	         $this->updateTimestamps();
+	        $this->updateTimestamps();
 	             
-	     }
+	    }
 
-	     $dirty = $this->getDirty();
+	    $dirty = $this->getDirty();
 
-	     if (count($dirty) > 0) {
+	    if (count($dirty) > 0) {
 	         
-	          $numRows = $this->setKeysForSaveQuery($query)->update($dirty);
+	        $numRows = $this->setKeysForSaveQuery($query)->update($dirty);
 
-	          $this->fireModelEvent('updated', false);
-	     }
+	        $this->fireModelEvent('updated', false);
+	    }
 	}
 
 	return true;

@@ -14,7 +14,7 @@ categories:
 在这篇文章中，我将分享12个关JavaScript非常有用的技巧。这些技巧将帮助你减少代码运行并优化代码。<br>
 
 Converting to boolean using !! operator
-========================================
+______________________________________
 
 ```
 function Account(cash) {
@@ -33,7 +33,7 @@ console.log(emptyAccount.hasMoney); // false
 当值为:0, null, "", undefined or NaN 返回false,其余返回为true. <br>
 
 Converting to number using + operator
-=====================================
+______________________________________
 
 ```
 function toNumber(strNumber) {
@@ -47,7 +47,7 @@ console.log(+new Date()) // 1461288164385
 只能对数字字符串进行操作，不然返回NaN (Not a Number).
 
 Short-circuits conditionals
-==========================
+______________________________________
 
 ```
 if (conected) {
@@ -66,7 +66,7 @@ user && user.login();
 ```
 
 Default values using || operator
-===============================
+______________________________________
 
 ```
 function User(name, age) {
@@ -85,7 +85,7 @@ console.log(user2.age); // 25
 虽然ES6已经有了默认参数，但是为了兼容旧的代码，可以这样给变量赋默认值。一种骤死。<br>
 
 Caching the array.length in the loop
-====================================
+______________________________________
 
 ```
 for(var i = 0; i < array.length; i++) {
@@ -111,7 +111,7 @@ for(var i = 0, length = array.length; i < length; i++) {
 ```
 
 Detecting properties in an object
-================================
+______________________________________
 
 ```
 if ('querySelector' in document) {
@@ -124,7 +124,7 @@ if ('querySelector' in document) {
 这个技巧很简单，很有意思。<br>
 
 Getting the last item in the array
-=================================
+______________________________________
 
 ```
 var array = [1,2,3,4,5,6];
@@ -134,7 +134,7 @@ console.log(array.slice(-3)); // [4,5,6]
 ```
 
 Array truncation
-================
+______________________________________
 
 ```
 var array = [1,2,3,4,5,6];
@@ -145,7 +145,7 @@ console.log(array); // [1,2,3]
 ```
 
 Replace all
-===========
+______________________________________
 
 ```
 var string = "john john";
@@ -154,7 +154,7 @@ console.log(string.replace(/hn/g, "ana")); // "joana joana"
 ```
 
 Merging arrays
-==============
+______________________________________
 
 ```
 var array1 = [1,2,3];
@@ -171,7 +171,7 @@ console.log(array1.push.apply(array1, array2)); // [1,2,3,4,5,6];
 ```
 
 Converting NodeList to Arrays
-=============================
+______________________________________
 
 ```
 var elements = document.querySelectorAll("p"); // NodeList
@@ -180,7 +180,7 @@ var arrayElements = Array.from(elements); // This is another way of converting N
 ```
 
 Shuffling array’s elements
-==========================
+______________________________________
 
 ```
 var list = [1,2,3];
