@@ -27,7 +27,7 @@ class Database
     {
 
     }
-    
+
     public function test (MysqlAdapter $adapter)
     {
          $adapter->test();
@@ -53,26 +53,18 @@ class App
 
     $reflector = new ReflectionMethod($instance, $method);
 
-    $parameters = [
-        1
-    ];
+    $parameters = [1];
 
     foreach ($reflector->getParameters() as $key => $parameter)
     {
-
         $class = $parameter->getClass();
 
         if ($class) {
-            	array_splice($parameters, $key, 0, [
-                    new $class->name()
-            	]);
+            array_splice($parameters, $key, 0, [new $class->name()]);
         }
     }
 
-    call_user_func_array([
-            $instance,
-            $method
-    	], $parameters);
+    call_user_func_array([$instance,$method], $parameters);
     }
 }
 

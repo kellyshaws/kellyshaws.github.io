@@ -12,7 +12,8 @@ categories:
 
 Laravel框架的基础是一个功能强大的IoC container。为了真正理解本框架，需要好好掌握该容器。然而我们需要了解，控制反转容器只是一种用于方便实现"依赖注入"的工具。但要实现依赖注入并不一定需要控制反转容器只是用容器会更方便和容易。<br>
 
-##遇到的问题
+遇到的问题
+=========
 
 首先来看看我们为何要使用依赖注入，它能带来什么好处。考虑下列代码：<br>
 
@@ -43,7 +44,8 @@ class UserController extends BaseController
 
 那么我们就别再将控制器和Eloquent耦合在一起了。咱们注入一个资料库类。<br>
 
-##建立约定
+建立约定
+=========
 
 首先我们定义一个接口，然后实现该接口。<br>
 
@@ -71,14 +73,14 @@ class UserController extends BaseController
     {
         $this->users = $users;
     }
-   
+
     public function getIndex()
     {
         $users=$this->users->all();
         return View::make('users.index', compact('users'));
     }
 }
-```	
+```
 
 现在我们的控制器就完全和数据层面无关了。在这里无知是福！我们的数据可能来自MySQL，MongoDB或者Redis。我们的控制器不知道也不需要知道他们的区别。仅仅做出了这么小小的改变，我们就可以独立于数据层来测试Web层了，将来切换存储实现也会很容易。<br>
 
@@ -101,7 +103,7 @@ public function testIndexActionBindsUsersFromRepository()
     App::instance('UserRepositoryInterface', $repository);
     // Act...
     $response  = $this->action('GET', 'UserController@getIndex');
-     
+
     // Assert...
     $this->assertResponseOk();
     $this->assertViewHas('users', array('foo'));
@@ -116,17 +118,18 @@ public function testIndexActionBindsUsersFromRepository()
 </p>
 </blockquote>
 
-##更进一步
+更进一步
+=========
 
 让我们考虑另一个例子来巩固理解。可能我们想要去提醒用户该交钱了。我们会定义两个接口，或者约定。这些约定使我们在更改实际实现时更加灵活。<br>
 
 ```
-interface BillerInterface 
+interface BillerInterface
 {
     public function bill(array $user, $amount);
 }
 
-interface BillingNotifierInterface 
+interface BillingNotifierInterface
 {
     public function notify(array $user, $amount);
 }
@@ -141,7 +144,7 @@ class StripeBiller implements BillerInterface
     {
         $this->notifier = $notifier;
     }
-    
+
     public function bill(array $user, $amount)
     {
         // Bill the user via Stripe...
@@ -162,7 +165,7 @@ class StripeBiller implements BillerInterface
 
 那我们如何做依赖注入呢？很简单：<br>
 
-``` 
+```
 $biller = new StripeBiller(new SmsNotifier);
 ```
 
@@ -171,7 +174,8 @@ $biller = new StripeBiller(new SmsNotifier);
 
 那IoC容器呢？难道依赖注入不需要IoC容器么？当然不需要！在接下来的章节里面你会了解到，容器使得依赖注入更易于管理，但是容器不是依赖注入所必须的。只要遵循本章提出的原则，你可以在你任何的项目里面实施依赖注入，而不必管该项目是否使用了容器。<br>
 
-##太像Java了
+太像Java了
+=========
 
 有人会说使用接口让PHP代码看上去太像Java了——即代码太罗嗦了——你必须定义接口然后实现它，要多按好多下键盘。<br>
 

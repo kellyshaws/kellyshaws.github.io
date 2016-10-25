@@ -11,14 +11,11 @@ categories:
 - YAML
 ---
 
-编程免不了要写配置文件，怎么写配置也是一门学问。<br>
-
 YAML 是专门用来写配置文件的语言，非常简洁和强大，远比 JSON 格式方便。<br>
 
-本文介绍 YAML 的语法，以JS-YAML的实现为例。你可以去在线 Demo 验证下面的例子。<br>
 
-
-##简介##
+简介
+===
 
 YAML语言的设计目标，就是方便人类读写。它实质上是一种通用的数据串行化格式。<br>
 
@@ -42,7 +39,8 @@ YAML 支持的数据结构有三种。<br>
 
 -纯量（scalars）：单个的、不可再分的值
 
-##对象##
+对象
+===
 
 对象的一组键值对，使用冒号结构表示。<br>
 
@@ -59,7 +57,7 @@ animal: pets
 Yaml 也允许另一种写法，将所有键值对写成一个行内对象。<br>
 
 ```
-hash: { name: Steve, foo: bar } 
+hash: { name: Steve, foo: bar }
 ```
 
 转为 JavaScript 如下。<br>
@@ -68,7 +66,8 @@ hash: { name: Steve, foo: bar }
 { hash: { name: 'Steve', foo: 'bar' } }
 ```
 
-##数组##
+数组
+===
 
 一组连词线开头的行，构成一个数组。<br>
 
@@ -111,7 +110,8 @@ animal: [Cat, Dog]
 { animal: [ 'Cat', 'Dog' ] }
 ```
 
-##复合结构##
+复合结构
+=======
 
 对象和数组可以结合使用，形成复合结构。<br>
 
@@ -119,26 +119,27 @@ animal: [Cat, Dog]
 languages:
  - Ruby
  - Perl
- - Python 
+ - Python
 websites:
- YAML: yaml.org 
- Ruby: ruby-lang.org 
- Python: python.org 
- Perl: use.perl.org 
+ YAML: yaml.org
+ Ruby: ruby-lang.org
+ Python: python.org
+ Perl: use.perl.org
 ```
 
 转为 JavaScript 如下。<br>
 
 ```
 { languages: [ 'Ruby', 'Perl', 'Python' ],
-  websites: 
+  websites:
    { YAML: 'yaml.org',
      Ruby: 'ruby-lang.org',
      Python: 'python.org',
      Perl: 'use.perl.org' } }
 ```
 
-##纯量##
+纯量
+===
 
 纯量是最基本的、不可再分的值。以下数据类型都属于 JavaScript 的纯量。
 
@@ -177,7 +178,7 @@ isSet: true
 null用~表示。<br>
 
 ```
-parent: ~ 
+parent: ~
 ```
 
 转为 JavaScript 如下。<br>
@@ -189,7 +190,7 @@ parent: ~
 时间采用 ISO8601 格式。<br>
 
 ```
-iso8601: 2001-12-14t21:59:43.10-05:00 
+iso8601: 2001-12-14t21:59:43.10-05:00
 ```
 
 转为 JavaScript 如下。<br>
@@ -223,7 +224,8 @@ f: !!str true
 { e: '123', f: 'true' }
 ```
 
-##字符串##
+字符串
+=====
 
 字符串是最常见，也是最复杂的一种数据类型。<br>
 
@@ -267,7 +269,7 @@ s2: "内容\n字符串"
 单引号之中如果还有单引号，必须连续使用两个单引号转义。<br>
 
 ```
-str: 'labor''s day' 
+str: 'labor''s day'
 ```
 
 转为 JavaScript 如下。<br>
@@ -384,11 +386,11 @@ test:
 下面是另一个例子。
 
 ```
-- &showell Steve 
-- Clark 
-- Brian 
-- Oren 
-- *showell 
+- &showell Steve
+- Clark
+- Brian
+- Oren
+- *showell
 ```
 
 转为 JavaScript 代码如下。<br>

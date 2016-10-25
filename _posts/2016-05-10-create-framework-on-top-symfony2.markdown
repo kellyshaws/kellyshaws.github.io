@@ -19,7 +19,7 @@ categories:
 与其按自己想象瞎写一个框架，我们不如不断的改进我们的“应用程序”，每次改进都引入一个“概念”。让我们从最简单的一个程序开始：<br>
 
 ```
-//index.php 
+//index.php
 
 $input = isset($_GET['name']) ? $_GET['name'] : 'World';
 
@@ -34,14 +34,14 @@ printf('Hello %s', htmlspecialchars($input, ENT_QUOTES, 'UTF-8'));
 
 执行下面的命令<br>
 
-``` 
+```
 composer require symfony/http-foundation
 composer require symfony/routing
 composer require symfony/http-kernel
 composer require symfony/event-dispatcher
 ```
 
-``` 
+```
 //index.php
 require 'vendor/autoload.php';
 
@@ -52,42 +52,41 @@ use Symfony\Component\HttpKernel;
 
 $request = Request::createFromGlobals();
 $routes = new Routing\RouteCollection();
-//$routes->add('hello', new Routing\Route('/hello/{name}', 
-//	['name' => 'World', '_controller' => 'render_template',])
-//);
-//$routes->add('say', new Routing\Route('/say/{name}', [
-//    'name' => 'hi',
-//    '_controller' => function ($request) {
-	        // $foo将在模板里可见
-    //		$request->attributes->set('foo', 'bar');
-    //		$response = render_template($request);
-    		// 改变一些头信息
-    //		$response->headers->set('Content-Type', 'text/plain');
-    //		return $response;
-//    }
-//]));
+$routes->add('hello', new Routing\Route('/hello/{name}',
+	['name' => 'World', '_controller' => 'render_template',])
+);
+$routes->add('say', new Routing\Route('/say/{name}', [
+    'name' => 'hi',
+    '_controller' => function ($request) {
+	    // $foo将在模板里可见
+		$request->attributes->set('foo', 'bar');
+		$response = render_template($request);
+		$response->headers->set('Content-Type', 'text/plain');
+		return $response;
+	}
+]));
 
-//$routes->add('leap_year', new Routing\Route('/is_leap_year/{year}', [
-//    'year' => null,
-//    '_controller' => array(new LeapYearController(), 'indexAction'),
-//]));
-//$routes->add('bye', new Routing\Route('/bye'));
+$routes->add('leap_year', new Routing\Route('/is_leap_year/{year}', [
+    'year' => null,
+    '_controller' => array(new LeapYearController(), 'indexAction'),
+]));
+$routes->add('bye', new Routing\Route('/bye'));
 $routes->add('leap_year', new Routing\Route('/is_leap_year/{year}', [
 	'year' => null,
 	'_controller' => 'LeapYearController::indexAction',
 ]));
-	 
+
 $context = new Routing\RequestContext();
 $context->fromRequest($request);
 $matcher = new Routing\Matcher\UrlMatcher($routes, $context);
 
 function render_template($request)
 {
-		extract($request->attributes->all(), EXTR_SKIP);
-		ob_start();
-		include sprintf(__DIR__.'/../src/pages/%s.php', $_route);
+	extract($request->attributes->all(), EXTR_SKIP);
+	ob_start();
+	include sprintf(__DIR__.'/../src/pages/%s.php', $_route);
 
-		return new Response(ob_get_clean());
+	return new Response(ob_get_clean());
 }
 
 class LeapYearController
@@ -96,24 +95,24 @@ class LeapYearController
 	{
 	 	if (is_leap_year($request->attributes->get('year'))) {
 	            return new Response('Yep, this is a leap year!');
-	        }
-	 
-	        return new Response('Nope, this is not a leap year.');
+        }
+
+        return new Response('Nope, this is not a leap year.');
 	}
 }
-	 
-try {
-	// extract($matcher->match($request->getPathInfo()), EXTR_SKIP);
-	// ob_start();
-	// include sprintf(__DIR__.'/../src/pages/%s.php', $_route);
-	// $response = new Response(ob_get_clean());
-	//$request->attributes->add($matcher->match($request->getPathInfo()));
-		//$response = call_user_func($request->attributes->get('_controller'), $request);
 
-		$resolver = new HttpKernel\Controller\ControllerResolver();
-	$controller = $resolver->getController($request);
-	$arguments = $resolver->getArguments($request, $controller);
-	$response = call_user_func_array($controller, $arguments);
+try {
+    extract($matcher->match($request->getPathInfo()), EXTR_SKIP);
+    ob_start();
+    include sprintf(__DIR__.'/../src/pages/%s.php', $_route);
+    $response = new Response(ob_get_clean());
+    $request->attributes->add($matcher->match($request->getPathInfo()));
+    $response = call_user_func($request->attributes->get('_controller'), $request);
+
+    $resolver = new HttpKernel\Controller\ControllerResolver();
+    $controller = $resolver->getController($request);
+    $arguments = $resolver->getArguments($request, $controller);
+    $response = call_user_func_array($controller, $arguments);
 } catch (Routing\Exception\ResourceNotFoundException $e) {
 	$response = new Response('Not Found', 404);
 } catch (Exception $e) {
@@ -127,7 +126,7 @@ $response->send();
 
 ```
 namespace Simplex;
-	 
+
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Matcher\UrlMatcher;
@@ -135,33 +134,33 @@ use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 use Symfony\Component\HttpKernel\Controller\ControllerResolver;
 use Symfony\Component\Routing\Matcher\UrlMatcherInterface;
 use Symfony\Component\HttpKernel\Controller\ControllerResolverInterface;
-	 
+
 class Framework
 {
 	protected $matcher;
 	protected $resolver;
-	 
-	public function __construct(UrlMatcherInterface $matcher, 
+
+	public function __construct(UrlMatcherInterface $matcher,
 		ControllerResolverInterface $resolver)
 	{
 		$this->matcher = $matcher;
-	        $this->resolver = $resolver;
+	    $this->resolver = $resolver;
 	}
-	 
+
 	public function handle(Request $request)
 	{
-	        try {
-	            $request->attributes->add($this->matcher->match($request->getPathInfo()));
-	 
-	            $controller = $this->resolver->getController($request);
-	            $arguments = $this->resolver->getArguments($request, $controller);
-	 
-	            return call_user_func_array($controller, $arguments);
-	        } catch (ResourceNotFoundException $e) {
-	            return new Response('Not Found', 404);
-	        } catch (\Exception $e) {
-	            return new Response('An error occurred', 500);
-	        }
+	    try {
+            $request->attributes->add($this->matcher->match($request->getPathInfo()));
+
+            $controller = $this->resolver->getController($request);
+            $arguments = $this->resolver->getArguments($request, $controller);
+
+            return call_user_func_array($controller, $arguments);
+        } catch (ResourceNotFoundException $e) {
+            return new Response('Not Found', 404);
+        } catch (\Exception $e) {
+            return new Response('An error occurred', 500);
+        }
 	 }
 }
 ```
@@ -175,36 +174,35 @@ $routes->add('leap_year', new Routing\Route('/is_leap_year/{year}', [
 	'year' => null,
 	'_controller' => 'Calendar\\Controller\\LeapYearController::indexAction',
 ]));
-	 
+
 $context = new Routing\RequestContext();
 $context->fromRequest($request);
 $matcher = new Routing\Matcher\UrlMatcher($routes, $context);
 $resolver = new HttpKernel\Controller\ControllerResolver();
-	 
+
 $framework = new Simplex\Framework($matcher, $resolver);
 $response = $framework->handle($request);
-	 
+
 $response->send();
 ```
 
-
-``` 
+```
 namespace Calendar\Controller;
-	 
+
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Calendar\Model\LeapYear;
-	 
+
 class LeapYearController
 {
 	public function indexAction(Request $request, $year)
 	{
 		$leapyear = new LeapYear();
-	        if ($leapyear->isLeapYear($year)) {
-	            return new Response('Yep, this is a leap year!');
-	        }
-	 
-	        return new Response('Nope, this is not a leap year.');
+        if ($leapyear->isLeapYear($year)) {
+            return new Response('Yep, this is a leap year!');
+        }
+
+        return new Response('Nope, this is not a leap year.');
 	}
 }
 ```
@@ -219,7 +217,7 @@ class LeapYear
         if (null === $year) {
             $year = date('Y');
         }
- 
+
         return 0 == $year % 400 || (0 == $year % 4 && 0 != $year % 100);
     }
 }
@@ -233,106 +231,106 @@ Symfony的事件调度(EventDispatcher)组件为此模式做了一个轻量级�
 
 ```
 namespace Simplex;
- 
+
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Matcher\UrlMatcherInterface;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 use Symfony\Component\HttpKernel\Controller\ControllerResolverInterface;
 use Symfony\Component\EventDispatcher\EventDispatcher;
- 
+
 class Framework
 {
 	protected $matcher;
 	protected $resolver;
 	protected $dispatcher;
-	 
+
 	public function __construct(
-	        EventDispatcher $dispatcher, 
-	        UrlMatcherInterface $matcher, 
+	        EventDispatcher $dispatcher,
+	        UrlMatcherInterface $matcher,
 	        ControllerResolverInterface $resolver
-	) 
+	)
 	{
-	        $this->matcher = $matcher;
-	        $this->resolver = $resolver;
-	        $this->dispatcher = $dispatcher;
+        $this->matcher = $matcher;
+        $this->resolver = $resolver;
+        $this->dispatcher = $dispatcher;
 	}
-	 
+
 	public function handle(Request $request)
 	{
-	        try {
-	            $request->attributes->add($this->matcher->match($request->getPathInfo()));
-	 
-	            $controller = $this->resolver->getController($request);
-	            $arguments = $this->resolver->getArguments($request, $controller);
-	 
-	            $response = call_user_func_array($controller, $arguments);
-	        } catch (ResourceNotFoundException $e) {
-	            $response = new Response('Not Found', 404);
-	        } catch (\Exception $e) {
-	            $response = new Response('An error occurred', 500);
-	        }
-	 
-	        // dispatch a response event
-	        $this->dispatcher->dispatch('response', new ResponseEvent($response, $request));
-	 
-	        return $response;
+        try {
+            $request->attributes->add($this->matcher->match($request->getPathInfo()));
+
+            $controller = $this->resolver->getController($request);
+            $arguments = $this->resolver->getArguments($request, $controller);
+
+            $response = call_user_func_array($controller, $arguments);
+        } catch (ResourceNotFoundException $e) {
+            $response = new Response('Not Found', 404);
+        } catch (\Exception $e) {
+            $response = new Response('An error occurred', 500);
+        }
+
+        // dispatch a response event
+        $this->dispatcher->dispatch('response', new ResponseEvent($response, $request));
+
+        return $response;
 	}
 }
 ```
 
-``` 
+```
 namespace Simplex;
-	 
+
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\EventDispatcher\Event;
-	 
+
 class ResponseEvent extends Event
 {
 	private $request;
 	private $response;
-	 
+
 	public function __construct(Response $response, Request $request)
 	{
 		$this->response = $response;
-	        $this->request = $request;
+        $this->request = $request;
 	}
-	 
+
 	public function getResponse()
 	{
-	        return $this->response;
+        return $this->response;
 	}
-	 
+
 	public function getRequest()
 	{
-	        return $this->request;
+        return $this->request;
 	}
 }
 ```
 
-``` 
+```
 use Symfony\Component\EventDispatcher\EventDispatcher;
-	 
+
 $dispatcher = new EventDispatcher();
 $dispatcher->addListener('response', function (Simplex\ResponseEvent $event) {
 	$response = $event->getResponse();
-	 
+
 	if ($response->isRedirection()
-		|| ($response->headers->has('Content-Type') 
+		|| ($response->headers->has('Content-Type')
 		&& false === strpos($response->headers->get('Content-Type'), 'html'))
 		|| 'html' !== $event->getRequest()->getRequestFormat()
-	) 
+	)
 	{
 		return;
 	}
-	 
+
 	$response->setContent($response->getContent().'GA CODE');
 });
-	 
+
 $framework = new Simplex\Framework($dispatcher, $matcher, $resolver);
 $response = $framework->handle($request);
-	 
+
 $response->send();
 ```
 
@@ -340,7 +338,7 @@ $response->send();
 $dispatcher->addListener('response', function (Simplex\ResponseEvent $event) {
 	$response = $event->getResponse();
 	$headers = $response->headers;
-	 
+
 	if (!$headers->has('Content-Length') && !$headers->has('Transfer-Encoding')) {
 		$headers->set('Content-Length', strlen($response->getContent()));
 	}
@@ -351,41 +349,41 @@ $dispatcher->addListener('response', function (Simplex\ResponseEvent $event) {
 
 ```	 
 namespace Simplex;
-	 
+
 class GoogleListener
 {
 	public function onResponse(ResponseEvent $event)
 	{
 		$response = $event->getResponse();
-	 
-	        if ($response->isRedirection()
-	            || ($response->headers->has('Content-Type') 
-	            && false === strpos($response->headers->get('Content-Type'), 'html'))
-	            || 'html' !== $event->getRequest()->getRequestFormat()
-	        ) {
-	            return;
-	        }
-	 
-	        $response->setContent($response->getContent().'GA CODE');
+
+        if ($response->isRedirection()
+            || ($response->headers->has('Content-Type')
+            && false === strpos($response->headers->get('Content-Type'), 'html'))
+            || 'html' !== $event->getRequest()->getRequestFormat()
+        ) {
+            return;
+        }
+
+        $response->setContent($response->getContent().'GA CODE');
 	}
 }
 ```
 
 ```
 namespace Simplex;
-	 
+
 class ContentLengthListener
 {
 	public function onResponse(ResponseEvent $event)
 	{
 		$response = $event->getResponse();
-	        $headers = $response->headers;
-	 
-	        if (!$headers->has('Content-Length') 
-	            && !$headers->has('Transfer-Encoding')
-	        ) {
-	            $headers->set('Content-Length', strlen($response->getContent()));
-	        }
+        $headers = $response->headers;
+
+        if (!$headers->has('Content-Length')
+            && !$headers->has('Transfer-Encoding')
+        ) {
+            $headers->set('Content-Length', strlen($response->getContent()));
+        }
 	}
 }
 ```
@@ -393,7 +391,7 @@ class ContentLengthListener
 ```
 $dispatcher = new EventDispatcher();
 $dispatcher->addListener('response', array(
-	new Simplex\ContentLengthListener(), 
+	new Simplex\ContentLengthListener(),
 	'onResponse'
 ), -255);
 $dispatcher->addListener('response', array(new Simplex\GoogleListener(), 'onResponse'));
@@ -407,13 +405,12 @@ $dispatcher->addSubscriber(new Simplex\GoogleListener());
 
 ```
 namespace Simplex;
-		 
+
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-	 
+
 class GoogleListener implements EventSubscriberInterface
 {
-	// ...
-	 
+
 	public static function getSubscribedEvents()
 	{
 		return array('response' => 'onResponse');
@@ -423,13 +420,11 @@ class GoogleListener implements EventSubscriberInterface
 
 ```
 namespace Simplex;
-	 
+
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-	 
+
 class ContentLengthListener implements EventSubscriberInterface
 {
-	// ...
-	 
 	public static function getSubscribedEvents()
 	{
 		return array('response' => array('onResponse', -255));

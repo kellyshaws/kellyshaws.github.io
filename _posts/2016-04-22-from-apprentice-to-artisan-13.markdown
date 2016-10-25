@@ -20,7 +20,8 @@ categories:
 </p>
 </blockquote>
 
-##解耦处理函数
+解耦处理函数
+==========
 
 接下来我们看一个例子。考虑有一个队列处理函数用来给用户发送手机短信。信息发送后，处理函数还要记录消息日志来保存给用户发送的消息历史。代码应该看起来是这样：<br>
 
@@ -51,7 +52,7 @@ class SendSMS
 那么我们来稍微改一改：<br>
 
 ```
-class User extends Eloquent 
+class User extends Eloquent
 {
     /**
      * Send the User an SMS message
@@ -74,14 +75,14 @@ class User extends Eloquent
 在本重构的例子中，我们将短信发送逻辑抽出到User模型里。同时我们将SmsCourierInterface的实现注入到该方法里，这样我们可以更容易对该方法进行测试。现在我们已经重构了短信发送逻辑，让我们再重写队列处理函数：<br>
 
 ```
-class SendSMS 
+class SendSMS
 {
     public function __construct(UserRepository $users, SmsCourierInterface $courier)
     {
         $this->users = $users;
         $this->courier = $courier;
     }
-    
+
     public function fire($job, $data)
     {
         $user = $this->users->find($data['user']['id']);
@@ -94,7 +95,7 @@ class SendSMS
 你可以看到我们重构了代码，使得队列处理函数更轻量化了。它本质上变成了队列系统和你真正的业务逻辑之间的转换层。这可是很了不起！这意味着我们可以很轻松的脱离队列系统来发送短信息。最后，让我们为短信发送逻辑写一些测试代码：<br>
 
 ```
-class SmsTest extends PHPUnit_Framework_TestCase 
+class SmsTest extends PHPUnit_Framework_TestCase
 {
     public function testUserCanBeSentSmsMessages()
     {
@@ -125,7 +126,8 @@ class SmsTest extends PHPUnit_Framework_TestCase
 }
 ```
 
-##其他处理函数
+其他处理函数
+==========
 
 使用类似的方式，我们可以改进和解耦很多其他类型的"处理函数"。将这些处理函数限制在转换层的状态，你可以将你庞大的业务逻辑和框架解耦，并保持整洁的代码结构。为了巩固这种思想，我们来看看一个路由过滤器。该过滤器用来验证当前用户是否是交过钱的高级用户套餐。<br>
 

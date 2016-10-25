@@ -13,7 +13,8 @@ categories:
 
 JavaScript看似简单，实际上很复杂。下面列出一些简单的问题，看似简单，但是每一点都涉及到javascript的一些知识领域。<br>
 
-###Object prototype###
+Object prototype
+================
 
 定义一个函数spacify ,将一个字符串作为参数传入，然后返回一个字符串，不过该字符串相对原有传入参数的变化是字母与字母之间多了一个空格。<br>
 
@@ -41,7 +42,8 @@ String.prototype.spacify = function(){
 };
 ```
 
-###Arguments###
+Arguments
+=========
 
 定义一个log函数。<br>
 
@@ -88,7 +90,8 @@ function log(){
 };
 ```
 
-###Context###
+Context
+======
 
 者对于上下文以及this的理解，给出下边的代码，如何去解释count的值。<br>
 
@@ -127,7 +130,8 @@ Function.prototype.bind = Function.prototype.bind || function(context) {
 }
 ```
 
-###apply, call and bind###
+apply, call and bind
+====================
 
 在Javascript中，Function是一种对象。Function对象中的this指向决定于函数被调用的方式。<br>
 

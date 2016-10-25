@@ -10,7 +10,8 @@ categories:
 - laravel
 ---
 
-##服务提供者
+服务提供者
+=========
 
 一个Laravel服务提供者就是一个用来进行IoC绑定的类。事实上，Laravel有好几十个服务提供者，用于管理框架核心组件的容器绑定。几乎框架里每一个组件的IoC绑定都是靠服务提供者来做的。你可以在app/config/app.php这个文件里查看目前有哪些服务提供者。<br>
 
@@ -34,7 +35,8 @@ categories:
 </p>
 </blockquote>
 
-##延迟加载的服务提供者
+延迟加载的服务提供者
+=================
 
 并非在你配置文件中的providers数组里的所有提供者在每次请求都会被实例化。否则会对性能不利，尤其是这个服务的功能用不到的情况下。比如，QueueServiceProvider服务就不是每次都用得到。<br>
 
@@ -50,7 +52,8 @@ categories:
 
 如果你有时间，去看看服务清单文件里面的内容。理解这个文件的结构有助于你对服务进行排错。<br>
 
-##作为管理工具
+作为管理工具
+==========
 
 想制作一个结构优美的Laravel应用的话，就要去学习如何用服务提供者来管理代码。当你在注册IoC绑定的时候，所有代码都杂乱的塞进了app/start路径下的文件里。别再这样做了，使用服务提供者来注册这些吧。<br>
 
@@ -64,7 +67,7 @@ categories:
 
 咱们来考虑这个例子。也许我们的应用正在使用Pusher来为客户推送消息。为了将我们的应用和Pusher解耦，我们要定义EventPusherInterface接口和对应的实现类PusherEventPusher。这样在需求变化或应用改进时，我们就可以随时轻松的改变推送服务提供商。<br>
 
-``` 
+```
 interface EventPusherInterface
 {
     public function push($message, array $data = array());
@@ -76,7 +79,7 @@ class PusherEventPusher implements EventPusherInterface
     {
         $this->pusher = $pusher;
     }
-    
+
     public function push($message, array $data = array())
     {
         // Push message via the Pusher SDK...
@@ -89,7 +92,7 @@ class PusherEventPusher implements EventPusherInterface
 ```
 use Illuminate\Support\ServiceProvider;
 
-class EventPusherServiceProvider extends ServiceProvider 
+class EventPusherServiceProvider extends ServiceProvider
 {
     public function register()
     {
@@ -113,7 +116,7 @@ class EventPusherServiceProvider extends ServiceProvider
 </p>
 </blockquote>
 
-``` 
+```
 App::singleton('EventPusherInterface', 'PusherEventPusher');
 ```
 
@@ -121,7 +124,8 @@ App::singleton('EventPusherInterface', 'PusherEventPusher');
 
 所以大胆的去创建你自己的服务提供者。并不是你非要发布个什么软件包才需要服务提供者，他们只是非常好的管理代码的工具。使用它们的力量去管理好应用中的各个组件吧。<br>
 
-##服务提供者的启动过程
+服务提供者的启动过程
+================
 
 在所有服务提供者都注册以后，他们就进入了“启动”过程。该过程会触发每个服务提供者的boot方法。这里会发生一种常见的错误用法：在register方法里面调用其他的服务。由于在register方法里我们不能保证所有其他服务都已经被加载，所以在该方法里调用别的服务有可能会出错。所以如果你想在服务提供者里调用别的服务，请在boot方法里做这种事儿。register方法只能进行容器注册。<br>
 
@@ -145,7 +149,8 @@ public function boot()
 </p>
 </blockquote>
 
-##核心也是服务提供者的模式
+核心也是服务提供者的模式
+===================
 
 你可能已经注意到，在app配置文件里面已经有了很多服务提供者。每一个都负责启动框架核心的一部分。比如MigrationServiceProvider负责启动数据库迁移的类，包括Artisan里面的命令。EventServiceProvide负责启动和注册事件调度机制。不同的服务提供者有着不同的复杂度，但他们都负责启动核心的一部分。<br>
 

@@ -10,7 +10,8 @@ categories:
 - laravel
 ---
 
-##基础绑定
+基础绑定
+=========
 
 我们已经学习了依赖注入，接下来咱们一起来探索IoC Container。IoC容器可以使你更容易管理依赖注入，Laravel框架拥有一个很强大的IoC容器。Laravel的核心就是这个IoC容器，这个IoC容器使得框架各个组件能很好的在一起工作。事实上Laravel的Application类就是继承自Container类！<br>
 
@@ -91,7 +92,8 @@ App::instance('BillingNotifierInterface', $notifier);
 
 现在我们熟悉了容器的基础用法，让我们深入发掘它更强大的功能：依靠反射来处理类和接口。<br>
 
-##反射解决方案
+反射解决方案
+==========
 
 用反射来自动处理依赖是Laravel容器的一个最强大的特性。反射是一种运行时探测类和方法的能力。比如，PHP的ReflectionClass可以探测一个类的方法。method_exists某种意义上说也是一种反射。我们来把玩一下PHP的反射类，试试下面的代码吧：<br>
 

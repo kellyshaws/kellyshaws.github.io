@@ -10,11 +10,12 @@ categories:
 - laravel
 ---
 
-##Strong Typing & Water Fowl
+Strong Typing & Water Fowl
+==========================
 
 在之前的章节里，涵盖了依赖注入的基础知识：什么是依赖注入；如何实现依赖注入；依赖注入有什么好处。之前章节里面的例子也模拟了将interface注入到classes里面的过程。在我们继续学习之前，有必要深入讲解一下接口，而这正是很多PHP开发者所不熟悉的。<br>
 
-在我成为PHP程序员之前，我是写.NET的。你觉得我是M么？在.NET里可到处都是接口。事实上很多接口是定义在.NET框架核心中了，一个好的理由是：很多.NET语言比如C#和VB.NET都是强类型的。也就是说，你在给一个函数传值，要么传原生类型对象，要么就必须给这个对象一个明确的类型定义。比如考虑以下C#方法：<br>
+在.NET里可到处都是接口。事实上很多接口是定义在.NET框架核心中了，一个好的理由是：很多.NET语言比如C#和VB.NET都是强类型的。也就是说，你在给一个函数传值，要么传原生类型对象，要么就必须给这个对象一个明确的类型定义。比如考虑以下C#方法：<br>
 
 ```
 public int BillUser(User user)
@@ -51,7 +52,8 @@ public function billUser(User $user)
 
 与此同时，强类型的特性也使得程序僵化。比如Eloquent ORM中，类似whereEmailOrName的动态方法就不可能在C#这样的强类型语言里实现。我们不讨论强类型弱类型哪种更好，而是要记住他们分别的优劣之处。在PHP里面使用强类型标记不是错误，使用弱类型特性也不是错误。但是不加思索，不管实际情况去使用一种模式，这么固执的使用就是错的。<br>
 
-##约定的范例
+约定的范例
+=========
 
 接口就是约定。接口不包含任何代码实现，只是定义了一个对象应该实现的一系列方法。如果一个对象实现了一个接口，那么我们就能确信这个接口所定义的一系列方法都能在这个对象上使用。因为有约定保证了特定方法的实现标准，通过多态也能使类型安全的语言变得更灵活。<br>
 
@@ -69,7 +71,7 @@ public function billUser(User $user)
 interface ProviderInterface
 {
     public function getLowestPrice($location);
-    
+
     public function book($location);
 }
 ```
@@ -110,12 +112,13 @@ $user->bookLocation($cheapestProvider, $location);
 </p>
 </blockquote>
 
-##接口与团队开发
+接口与团队开发
+============
 
 当你的团队在开发大型应用时，不同的部分有着不同的开发速度。比如一个开发人员在制作数据层，另一个开发人员在做前端和网站控制器层。前端开发者想测试他的控制器，不过后端开发较慢没法同步测试。那如果两个开发者能以接口的方式达成协议，后台开发的各种类都遵循这种协议，就像这样：<br>
 
 ```
-interface OrderRepositoryInterface 
+interface OrderRepositoryInterface
 {
     public function getMostRecent(User $user);
 }
@@ -124,13 +127,13 @@ interface OrderRepositoryInterface
 一旦建立了约定，就算约定还没实现，前端开发者也可以测试他的控制器了！这样应用中的不同组件就可以按不同的速度开发，并且单元测试也可以做。而且这种处理方法还可以使组件内部的改动不会影响到其他不相关组件。要记着无知是福。我们写的那些类们不用知道别的类如何实现的，只要知道它们能实现什么。这下咱们有了定义好的约定，再来写控制器：<br>
 
 ```
-class OrderController 
+class OrderController
 {
     public function __construct(OrderRepositoryInterface $orders)
     {
         $this->orders = $orders;
     }
-    
+
     public function getRecent()
     {
         $recent = $this->orders->getMostRecent(Auth::user());
@@ -142,7 +145,7 @@ class OrderController
 前端开发者甚至可以为这接口写个"假"实现，然后这个应用的视图就可以用假数据填充了：<br>
 
 ```
-class DummyOrderRepository implements OrderRepositoryInterface 
+class DummyOrderRepository implements OrderRepositoryInterface
 {
     public function getMostRecent(User $user)
     {

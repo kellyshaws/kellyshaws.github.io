@@ -13,7 +13,8 @@ categories:
 
 随着memcache、redis以及其它一些内存K/V数据库的流行，一致性哈希也越来越被开发者所了解。因为这些内存K/V数据库大多不提供分布式支持，所以如果要提供多台server来提供服务的话，就需要解决如何将数据分散到server，并且在增减server时如何最大化的不令数据重新分布。<br>
 
-###Hash###
+Hash
+====
 
 一种将任意长度的消息压缩到某一固定长度的消息摘要的函数。<br>
 
@@ -47,7 +48,8 @@ echo "key2: " . (hash("key2") % 2) . "\n";
 
 在服务器数量不变的时候，这种方式也是能很好的工作的。<br>
 
-###一致性哈希###
+一致性哈希
+========
 
 由于hash算法结果一般为unsigned int型，因此对于hash函数的结果应该均匀分布在[0,2^32-1]区间，如果我们把一个圆环用2^32 个点来进行均匀切割，首先按照hash(key)函数算出服务器(节点)的哈希值， 并将其分布到0～2^32的圆环上。<br>
 
@@ -66,7 +68,8 @@ class ConsistentHash {
     // 延迟排序，因为可能会执行多次addServer
     private $layzeSorted = false;
 
-    public function addServer($server) {
+    public function addServer($server) 
+    {
         $hash = hash($server);
         $this->layzeSorted = false;
 
@@ -77,7 +80,8 @@ class ConsistentHash {
         return $this;
     }
 
-    public function find($key) {
+    public function find($key) 
+    {
         // 排序
         if (!$this->layzeSorted) {
             asort($this->serverList);
@@ -104,7 +108,7 @@ class ConsistentHash {
             {
                 $nextPos = $keys[$key + 1];
             }
-            
+
             if (is_null($nextPos)) {
                 return $values[$key];
             }

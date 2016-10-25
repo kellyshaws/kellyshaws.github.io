@@ -16,7 +16,8 @@ HTTP 是一种没有状态的协议，也就是它并不知道是谁是访问应
 
 上面说的就是 Session，我们需要在服务端存储为登录的用户生成的Session，这些Session可能会存储在内存，磁盘，或者数据库里。我们可能需要在服务端定期的去清理过期的 Session 。<br>
 
-##基于 Token 的身份验证方法##
+基于Token的身份验证方法
+====================
 
 使用基于 Token 的身份验证方法，在服务端不需要存储用户的登录记录。大概的流程是这样的：<br>
 
@@ -33,7 +34,8 @@ HTTP 是一种没有状态的协议，也就是它并不知道是谁是访问应
 6. 服务端收到请求，然后去验证客户端请求里面带着的 Token，如果验证成功，就向客户端返回请求的数据
 
 
-##JWT##
+JWT
+===
 
 实施 Token 验证的方法挺多的，还有一些标准方法，比如 JWT，读作：jot ，表示：JSON Web Tokens 。JWT 标准的 Token 有三个部分：<br>
 
@@ -47,7 +49,8 @@ HTTP 是一种没有状态的协议，也就是它并不知道是谁是访问应
 eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJuaW5naGFvLm5ldCIsImV4cCI6IjE0Mzg5NTU0NDUiLCJuYW1lIjoid2FuZ2hhbyIsImFkbWluIjp0cnVlfQ.SwyHTEx_RQppr97g4J5lKXtabJecpejuef8AqKYMAJc
 ```
 
-###Header###
+Header
+=====
 
 header 部分主要是两部分内容，一个是 Token 的类型，另一个是使用的算法，比如下面类型就是 JWT，使用的算法是 HS256。<br>
 
@@ -64,7 +67,8 @@ header 部分主要是两部分内容，一个是 Token 的类型，另一个是
 eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9
 ```
 
-###Payload###
+Payload
+=======
 
 Payload 里面是 Token 的具体内容，这些内容里面有一些是标准字段，你也可以添加其它需要的内容。下面是标准字段：<br>
 
@@ -92,7 +96,8 @@ Payload 里面是 Token 的具体内容，这些内容里面有一些是标准�
 eyJpc3MiOiJuaW5naGFvLm5ldCIsImV4cCI6IjE0Mzg5NTU0NDUiLCJuYW1lIjoid2FuZ2hhbyIsImFkbWluIjp0cnVlfQ
 ```
 
-###Signature###
+Signature
+=========
 
 JWT 的最后一部分是 Signature ，这部分内容有三个部分，先是用 Base64 编码的 header.payload，再用加密算法加密一下，加密的时候要放进去一个 Secret ，这个相当于是一个密码，这个密码秘密地存储在服务端。<br>
 
@@ -101,7 +106,7 @@ JWT 的最后一部分是 Signature ，这部分内容有三个部分，先是�
 - secret
 
 ```
-var encodedString = base64UrlEncode(header) + "." + base64UrlEncode(payload); 
+var encodedString = base64UrlEncode(header) + "." + base64UrlEncode(payload);
 HMACSHA256(encodedString, 'secret');
 ```
 处理完成以后看起来像这样：<br>

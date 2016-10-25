@@ -10,7 +10,8 @@ categories:
 - laravel
 ---
 
-##展框架
+扩展框架
+=======
 
 为了方便你自定义框架核心组件，Laravel提供了大量可以扩展的地方。你甚至可以完全替换掉旧组件。例如：哈希器遵守了HasherInterface接口，你可以按照你自己应用的需求来重新实现。你也可以扩展Request对象，添加你自己用的顺手的helper方法。你甚至可以添加全新的身份认证、缓存和会话机制！<br>
 
@@ -24,7 +25,8 @@ Laravel组件通常有两种扩展方式：在IoC容器里面绑定新实现，�
 </p>
 </blockquote>
 
-##管理者和工厂
+管理者和工厂
+=========
 
 Laravel有好多Manager类用来管理基于驱动的组件的生成过程。基于驱动的组件包括：缓存、会话、身份认证、队列组件等。管理类负责根据应用程序的配置，来生成特定的驱动实例。比如：CacheManager可以创建APC、Memcached、Native、还有其他不同的缓存驱动的实现。<br>
 
@@ -38,7 +40,8 @@ Laravel有好多Manager类用来管理基于驱动的组件的生成过程。基
 </p>
 </blockquote>
 
-##缓存
+缓存
+=====
 
 要扩展Laravel的缓存机制，我们将使用CacheManager里的extend方法来绑定我们自定义的缓存驱动。扩展其他的管理类也是类似的。比如，我们想注册一个新的缓存驱动，名叫"mongo"，代码可以这样写：<br>
 
@@ -54,7 +57,7 @@ extend方法的第一个参数是你要定义的驱动的名字。该名字对�
 要创建我们自己的缓存驱动，首先要实现Illuminate\Cache\StoreInterface接口。所以我们用MongoDB来实现的缓存驱动就可能看上去是这样：<br>
 
 ```
-class MongoStore implements Illuminate\Cache\StoreInterface 
+class MongoStore implements Illuminate\Cache\StoreInterface
 {
     public function get($key) {}
     public function put($key, $value, $minutes) {}
@@ -87,9 +90,10 @@ Cache::extend('mongo', function($app)
 
     如果你还发愁在哪儿放注册代码，先考虑放到服务提供者里吧。我们之前就讲过，使用服务提供者是一种非常棒的管理你应用代码的途径。<br>
 </p>
-</blockquote>	
+</blockquote>
 
-##会话
+会话
+===
 
 扩展Laravel的会话机制和上文的缓存机制一样简单。和刚才一样，我们使用extend方法来注册自定义的代码：<br>
 
@@ -103,7 +107,7 @@ Session::extend('mongo', function($app)
 注意我们自定义的会话驱动实现的是SessionHandlerInterface接口。这个接口在PHP5.4以上版本才有。但如果你用的是PHP 5.3也别担心，Laravel会自动帮你定义这个接口的。该接口要实现的方法不多也不难。我们用MongoDB来实现就像下面这样：<br>
 
 ```
-class MongoHandler implements SessionHandlerInterface 
+class MongoHandler implements SessionHandlerInterface
 {
     public function open($savePath, $sessionName) {}
     public function close() {}
@@ -135,11 +139,12 @@ Session::extend('mongo', function($app)
 {
     return new MongoHandler;
 });
-```	
+```
 
 注册完毕后，我们就可以在app/config/session.php配置文件里使用mongo驱动了。<br>
 
-##身份认证
+身份认证
+=========
 
 身份认证模块的扩展方式和缓存与会话的扩展方式一样：使用我们熟悉的extend方法就可以进行扩展：<br>
 
@@ -155,7 +160,7 @@ Auth::extend('riak', function($app)
 咱们来看一看UserProviderInterface接口的代码：<br>
 
 ```
-interface UserProviderInterface 
+interface UserProviderInterface
 {
     public function retrieveById($identifier);
     public function retrieveByCredentials(array $credentials);
@@ -171,8 +176,8 @@ validateCredentials方法会通过比较$user参数和$credentials参数来检�
 
 现在我们探索了UserProviderInterface接口的每一个方法，接下来咱们看一看UserInterface接口。别忘了UserInterface的实例应当是retrieveById和retrieveByCredentials方法的返回值：<br>
 
-``` 
-interface UserInterface 
+```
+interface UserInterface
 {
     public function getAuthIdentifier();
     public function getAuthPassword();
@@ -192,7 +197,8 @@ Auth::extend('riak', function($app)
 
 使用extend方法注册好驱动以后，你就可以在app/config/auth.php配置文件里面切换到新的驱动了。<br>
 
-##使用容器进行扩展
+使用容器进行扩展
+==============
 
 Laravel框架内几乎所有的服务提供者都会绑定一些对象到IoC容器里。你可以在app/config/app.php文件里找到服务提供者列表。如果你有时间的话，你应该大致过一遍每个服务提供者的源码。这么做你便可以对每个服务提供者有更深的理解，明白他们都往框架里加了什么东西，对应的什么键。那些键就用来联系着各种各样的服务。<br>
 
@@ -201,7 +207,7 @@ Laravel框架内几乎所有的服务提供者都会绑定一些对象到IoC容�
 ```
 namespace Snappy\Extensions\Pagination;
 
-class Environment extends \Illuminate\Pagination\Environment 
+class Environment extends \Illuminate\Pagination\Environment
 {
     //
 }
@@ -228,16 +234,17 @@ class SnappyPaginationProvider extends PaginationServiceProvider
 
 这就是扩展绑定进容器的核心类的一般方法。基本上每一个核心类都以这种方式绑定进了容器，都可以被重写。还是那一句话，读一遍框架内的服务提供者源码吧。这有助于你熟悉各种类是怎么绑定进容器的，都绑定的是哪些键。这是学习Laravel框架到底如何运转的好方法。<br>
 
-##请求的扩展
+请求的扩展
+========
 
 由于他是框架里面非常基础的部分，并且在请求流程中很早就被实例化，所以要扩展Request类的方法与之前相比是有些许不同的。<br>
 
 首先还是要写个子类：<br>
 
-``` 
+```
 namespace QuickBill\Extensions;
 
-class Request extends \Illuminate\Http\Request 
+class Request extends \Illuminate\Http\Request
 {
     // Custom, helpful methods here...
 }

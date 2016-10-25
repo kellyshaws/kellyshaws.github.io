@@ -14,7 +14,8 @@ categories:
 根据官方定义，SPL是"a collection of interfaces and classes that are meant to solve standard problems"。但是，目前在使用中，SPL更多地被看作是一种使object模仿array行为的interfaces和classes。
 
 
-###Iterator###
+Iterator
+========
 
 SPL规定，所有实现了Iterator接口的class，都可以用在Loop中。Iterator接口中包含5个必须实现的方法：<br>
 
@@ -40,7 +41,8 @@ SPL规定，所有实现了Iterator接口的class，都可以用在Loop中。Ite
   
 
 ```
-class ArrayReloaded implements Iterator {
+class ArrayReloaded implements Iterator 
+{
 
   /**
    * A native PHP array to iterate over
@@ -56,7 +58,8 @@ class ArrayReloaded implements Iterator {
    * Constructor
    * @param array native PHP array to iterate over
    */
-  function __construct($array) {
+  function __construct($array) 
+  {
     $this->array = $array;
   }
 
@@ -64,21 +67,24 @@ class ArrayReloaded implements Iterator {
    * Return the array "pointer" to the first element
    * PHP's reset() returns false if the array has no elements
    */
-  function rewind() {
+  function rewind() 
+  {
     $this->valid = (FALSE !== reset($this->array));
   }
 
   /**
    * Return the current array element
    */
-  function current() {
+  function current() 
+  {
     return current($this->array);
   }
 
   /**
    * Return the key of the current array element
    */
-  function key() {
+  function key() 
+  {
     return key($this->array);
   }
 
@@ -86,20 +92,23 @@ class ArrayReloaded implements Iterator {
    * Move forward by one
    * PHP's next() returns false if there are no more elements
    */
-  function next() {
+  function next() 
+  {
     $this->valid = (FALSE !== next($this->array));
   }
 
   /**
    * Is the current element valid?
    */
-  function valid() {
+  function valid() 
+  {
     return $this->valid;
   }
 }
 ```
 
-###ArrayAccess###
+ArrayAccess
+============
 
 实现ArrayAccess接口，可以使得object像array那样操作。ArrayAccess接口包含四个必须实现的方法：
 
@@ -125,7 +134,8 @@ class ArrayReloaded implements Iterator {
 /**
  * A class that can be used like an array
  */
-class Article implements ArrayAccess {
+class Article implements ArrayAccess 
+{
 
   public $title;
 
@@ -133,7 +143,8 @@ class Article implements ArrayAccess {
 
   public $category;  
 
-  function __construct($title,$author,$category) {
+  function __construct($title,$author,$category) 
+  {
     $this->title = $title;
     $this->author = $author;
     $this->category = $category;
@@ -146,7 +157,8 @@ class Article implements ArrayAccess {
    * @param mixed value
    * @return void
    */
-  function offsetSet($key, $value) {
+  function offsetSet($key, $value) 
+  {
     if ( array_key_exists($key,get_object_vars($this)) ) {
       $this->{$key} = $value;
     }
@@ -158,7 +170,8 @@ class Article implements ArrayAccess {
    * @param mixed key (string or integer)
    * @return mixed value
    */
-  function offsetGet($key) {
+  function offsetGet($key) 
+  {
     if ( array_key_exists($key,get_object_vars($this)) ) {
       return $this->{$key};
     }
@@ -170,7 +183,8 @@ class Article implements ArrayAccess {
    * @param mixed key (string or integer)
    * @return void
    */
-  function offsetUnset($key) {
+  function offsetUnset($key) 
+  {
     if ( array_key_exists($key,get_object_vars($this)) ) {
       unset($this->{$key});
     }
@@ -182,45 +196,54 @@ class Article implements ArrayAccess {
    * @param mixed key (string or integer)
    * @return boolean
    */
-  function offsetExists($offset) {
+  function offsetExists($offset) 
+  {
     return array_key_exists($offset,get_object_vars($this));
   }
 }
 ```
 
-###IteratorAggregate###
+IteratorAggregate
+=================
 
 但是，虽然Article可以像数组那样操作，却无法使用foreach遍历，除非实现了前面提到的Iterator接口。另一个解决方法是，有时会需要将数据和遍历部分分开，这时就可以实现IteratorAggregate接口。它规定了一个getIterator()方法，返回一个使用Iterator接口的object。
 
 ```
-class Article implements ArrayAccess, IteratorAggregate {
+class Article implements ArrayAccess, IteratorAggregate 
+{
 
   /**
    * Defined by IteratorAggregate interface
    * Returns an iterator for for this object, for use with foreach
    * @return ArrayIterator
    */
-  function getIterator() {
+  function getIterator() 
+  {
     return new ArrayIterator($this);
   }
  ```
 
-###RecursiveIterator###
+RecursiveIterator
+================
 
  这个接口用于遍历多层数据，它继承了Iterator接口，因而也具有标准的current()、key()、next()、 rewind()和valid()方法。同时，它自己还规定了getChildren()和hasChildren()方法。The getChildren() method must return an object that implements RecursiveIterator.
 
-###SeekableIterator###
+SeekableIterator
+================
 
  SeekableIterator接口也是Iterator接口的延伸，除了Iterator的5个方法以外，还规定了seek()方法，参数是元素的位置，返回该元素。如果该位置不存在，则抛出OutOfBoundsException。
 
  ```
- class PartyMemberIterator implements SeekableIterator {
+ class PartyMemberIterator implements SeekableIterator 
+ {
 
-    public function __construct(PartyMember $member) {
+    public function __construct(PartyMember $member)
+     {
         // Store $member locally for iteration
     }
 
-    public function seek($index) {
+    public function seek($index) 
+    {
         $this->rewind();
         $position = 0;
         while ($position < $index && $this->valid()) {
@@ -237,7 +260,8 @@ class Article implements ArrayAccess, IteratorAggregate {
  }
 ```
 
-###Countable###
+Countable
+=========
 
 这个接口规定了一个count()方法，返回结果集的数量。
 
@@ -250,7 +274,8 @@ foreach(spl_classes() as $key=>$value) {
 }
 ```
 
-###DirectoryIterator###
+DirectoryIterator
+================
 
 这个类用来查看一个目录中的所有文件和子目录：
 
@@ -268,7 +293,8 @@ catch(Exception $e) {
 ```
 
 ```
-function scanDirectory($path) {
+function scanDirectory($path) 
+{
   foreach (new DirectoryIterator($path) as $fileInfo) {
     if ($fileInfo->isFile())
         echo $fileInfo->getFilename() . "<br>\n"; 
@@ -317,7 +343,8 @@ foreach(new DirectoryIterator('./' ) as $file ) {
 }
 ```
 
-###ArrayObject###
+ArrayObject
+===========
 
 这个类可以将Array转化为object。
 
@@ -362,7 +389,8 @@ $arrayObj->offsetSet(5, "galah");
 echo $arrayObj->offsetGet(4);
 ```
 
-###ArrayIterator###
+ArrayIterator
+=============
 
 这个类实际上是对ArrayObject类的补充，为后者提供遍历功能。
 
@@ -406,7 +434,8 @@ try {
 }
 ```
 
-###RecursiveArrayIterator类和RecursiveIteratorIterator类###
+RecursiveArrayIterator和RecursiveIteratorIterator
+================================================
 
 ArrayIterator类和ArrayObject类，只支持遍历一维数组。如果要遍历多维数组，必须先用RecursiveIteratorIterator生成一个Iterator，然后再对这个Iterator使用RecursiveIteratorIterator。
 
@@ -425,7 +454,8 @@ foreach(new RecursiveIteratorIterator(new RecursiveArrayIterator($array))
 }
 ```
 
-###FilterIterator###
+FilterIterator
+==============
 
 FilterIterator类可以对元素进行过滤，只要在accept()方法中设置过滤条件就可以了。
 
@@ -433,15 +463,18 @@ FilterIterator类可以对元素进行过滤，只要在accept()方法中设置�
 /*** a simple array ***/
 $animals = array('koala', 'kangaroo', 'wombat', 'wallaby', 'emu', 'NZ'=>'kiwi', 'kookaburra', 'platypus');
 
-class CullingIterator extends FilterIterator {
+class CullingIterator extends FilterIterator 
+{
 
   /*** The filteriterator takes  a iterator as param: ***/
-  public function __construct( Iterator $it ) {
+  public function __construct( Iterator $it ) 
+  {
     parent::__construct( $it );
   }
 
   /*** check if key is numeric ***/
-  function accept() {
+  function accept() 
+  {
     return is_numeric($this->key());
   }
 
@@ -453,7 +486,8 @@ foreach($cull as $key=>$value) {
 }
 ```
 
-###SimpleXMLIterator###
+SimpleXMLIterator
+================
 
 这个类用来遍历xml文件
 
@@ -559,7 +593,8 @@ try {
 }
 ```
 
-###CachingIterator###
+CachingIterator
+================
 
 这个类有一个hasNext()方法，用来判断是否还有下一个元素。
 
@@ -581,7 +616,8 @@ try {
 }
 ```
 
-###LimitIterator###
+LimitIterator
+=============
 
 这个类用来限定返回结果集的数量和位置，必须提供offset和limit两个参数，与SQL命令中limit语句类似
 
@@ -596,20 +632,21 @@ $array = array('koala', 'kangaroo', 'wombat', 'wallaby', 'emu', 'kiwi', 'kookabu
 $it = new LimitIterator(new ArrayIterator($array), $offset, $limit);
 
 foreach($it as $k=>$v) {
-    echo $it->getPosition().'<br />';
+  echo $it->getPosition().'<br />';
 }
 ```
 
-###SplFileObject###
+SplFileObject
+=============
 
 这个类用来对文本文件进行遍历
 
 ```
 try{
-    // iterate directly over the object
-    foreach( new SplFileObject(&quot;/usr/local/apache/logs/access_log&quot;) as $line)
-    // and echo each line of the file
-    echo $line.'<br />';
+  // iterate directly over the object
+  foreach( new SplFileObject(&quot;/usr/local/apache/logs/access_log&quot;) as $line)
+  // and echo each line of the file
+  echo $line.'<br />';
 } catch (Exception $e) {
   echo $e->getMessage();
 }
