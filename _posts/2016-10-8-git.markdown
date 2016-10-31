@@ -1,0 +1,77 @@
+---
+layout: post
+title:  "Git基本操作"
+date:   2016-10-8 13:00:15
+description: "Git基本操作"
+permalink: post/git
+disqus:
+  id: git
+categories:
+- git
+---
+
+记录Git的基本操作.<br>
+
+创建版本库
+--------
+
+```
+git init
+git add fileName
+git commit -m "commit comment"
+```
+
+时光穿梭
+-------
+
+```
+git status                 //可以让我们时刻掌握仓库当前的状态
+git diff fileName          //查看修改内容
+git reset --hard commit_id //在版本的历史之间穿梭
+git log                    //可以查看提交历史，以便确定要回退到哪个版本
+git reflog                 //查看命令历史，以便确定要回到未来的哪个版本
+git checkout -- fileName   //当你改乱了工作区某个文件的内容，想直接丢弃工作区的修改时,使用这个命令,可以从仓库或者暂存区里恢复
+git reset HEAD file        //把暂存区的修改撤销掉(unstage)，重新放回工作区
+git rm fileName            //删除文件
+git log --graph --pretty=oneline --abbrev-commit
+```
+
+远程仓库
+------
+
+```
+ssh-keygen -t rsa -C "youremail@example.com" //创建ssh key
+git remote add origin gitRemoteAddress       //添加远程仓库,origin标示符
+git push -u origin master                    //当前分支的内容就会被推送给远程仓库origin的master分支-u参数可以在推送的同时,将origin仓库的master分支设置为本地仓库当前分支upstream(上游)。添加了这个参数,将来运行git pull命令从远程仓库获取内容时,本地仓库的这个分支就可以直接从origin的master分支获取内容,省去了另外添加参数的麻烦。执行该操作后,当前本地仓库master分支的内容将会被推送到GitHub的远程仓库中.
+git checkout -b feature-D  
+git push -u origin feature-D                 //在本地仓库中创建了feature-D 分支,现在将它 push 给远程仓库并保持分支名称不变。
+git branch -a                                //查看当前分支的相关信息。添加 -a参数可以同时显示本地仓库和远程仓库的分支信息。
+git checkout -b feature-D origin/feature-D   //- b 参数的后面是本地仓库中新建分支的名称,以名为origin的仓库的feature-D分支为来源,在本地仓库中创建 feature-D 分支。
+git pull origin feature-D                   //将本地的 feature-D 分支更新到最新状态
+```
+
+分支管理
+------
+
+```
+git branch                      //查看分支
+git branch <name>               //创建分支
+git checkout <name>             //切换分支
+git checkout -b <name>          //创建+切换分支
+git merge <name> --no-ff        //合并某分支到当前分支
+git branch -d <name>            //删除分支
+git stash   
+git stash pop                   //当手头工作没有完成时，先把工作现场git stash一下，然后去修复bug，修复后，再git stash pop，回到工作现场。
+```
+
+标签管理
+------
+
+```
+git tag v1.0                          //新建一个标签，默认为HEAD，也可以指定一个commit id
+git tag                               //可以查看所有标签
+git push origin <tagname>             //可以推送一个本地标签
+git push origin --tags                //可以推送全部未推送过的本地标签
+git tag -d <tagname>                  //可以删除一个本地标签
+git push origin :refs/tags/<tagname>  //可以删除一个远程标签。
+```
