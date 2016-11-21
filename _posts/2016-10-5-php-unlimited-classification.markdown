@@ -15,16 +15,18 @@ categories:
 function tree($array,
         $id = 0,
         $primary = 'id',
-        $parent = 'parent_parent'
+        $parent = 'parent_id'
 )
 {
     $subArray = [];
-	foreach ($array as $key => $value) {
-		if ($id == $value[$parent]) {
-			$subArray[$key] = $value;
-			$subArray[$key]['childerns'] = tree($array,$value[$primary]);
-		}
+    foreach ($array as $key => $value) {
+	if ($id == $value[$parent]) {
+	    $subArray[$key] = $value;
+	    $subArray[$key]['childerns'] = tree($array,$value[$primary]);
 	}
-	return $subArray;
+    }
+    return $subArray;
 }
 ```
+
+一个很简单通用的递归.
