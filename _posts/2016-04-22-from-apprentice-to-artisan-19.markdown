@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "From Apprentice To Artisan --设计模式"
+title:  "From Apprentice To Artisan --接口隔离原则"
 date:   2016-04-21 16:00:15
 description: "From Apprentice To Artisan -- Design pattern"
 permalink: post/design-pattern-interface-segregation-principle 
