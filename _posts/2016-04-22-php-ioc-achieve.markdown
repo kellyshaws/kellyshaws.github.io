@@ -11,7 +11,7 @@ categories:
 - php
 ---
 
-相信大多数人对于他的实现原理并不太清楚。虽然使用过程中并不需要关心它的原理，但是了解原理让你使用起来更自信。
+依赖注入就是根据类的反射来完成。
 
 ```
 namespace Database;
@@ -49,22 +49,22 @@ class App
     {
     	if (! method_exists($instance, $method)) {
         	return null;
-    }
+      }
 
-    $reflector = new ReflectionMethod($instance, $method);
+      $reflector = new ReflectionMethod($instance, $method);
 
-    $parameters = [1];
+      $parameters = [1];
 
-    foreach ($reflector->getParameters() as $key => $parameter)
-    {
-        $class = $parameter->getClass();
+      foreach ($reflector->getParameters() as $key => $parameter)
+      {
+          $class = $parameter->getClass();
 
-        if ($class) {
-            array_splice($parameters, $key, 0, [new $class->name()]);
-        }
-    }
+          if ($class) {
+              array_splice($parameters, $key, 0, [new $class->name()]);
+          }
+      }
 
-    call_user_func_array([$instance,$method], $parameters);
+      call_user_func_array([$instance,$method], $parameters);
     }
 }
 
