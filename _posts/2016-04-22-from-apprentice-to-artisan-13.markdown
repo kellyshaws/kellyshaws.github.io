@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "From Apprentice To Artisan --应用架构"
+title:  "From Apprentice To Artisan --解耦处理函数"
 date:   2016-04-21 15:00:15
 description: "From Apprentice To Artisan --Application Architecture"
 permalink: post/application-architecture
