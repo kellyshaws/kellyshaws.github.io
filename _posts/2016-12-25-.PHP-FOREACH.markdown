@@ -1,0 +1,58 @@
+---
+layout: post
+title:  "PHP foreach的坑"
+date:   2016-12-11 13:00:15
+description: "PHP foreach的坑"
+permalink: post/php-foreach
+disqus:
+  id: php-foreach
+categories:
+- php
+---
+
+PHP foreach循环使用引用时有个小坑，需要注意点.
+
+```php
+
+$arr = ['a', 'b', 'c', 'd', 'e'];
+foreach ($arr as $i=>&$a) {
+    $a = $a.'_'. $a;
+    echo $a .'<br>';
+}
+foreach ($arr as $i=>$a) {
+    echo $a .'<br>';
+}
+print_r($arr);
+
+```
+
+```
+a_a
+b_b
+c_c
+d_d
+e_e
+
+a_a
+b_b
+c_c
+d_d
+d_d
+
+Array([0] => a_a, [1] => b_b, [2] => c_c, [3] => d_d, [4] => d_d)
+```
+
+造成这样的结果是因为PHP foreach中的$a的作用域是整个函数的局部变量，在循环外部仍然有效，而不是被封闭在循环内的,所以当执行第二个foreach时的$a并不是新的变量，而是仍然指向$arr数组第5个元素的地址引用，
+当第二个foreach在循环时实际上是在不停的给$arr数组的第5个元素赋值.<br>
+
+
+具体赋值情况:<br>
+第一次：a_a 赋值给第5个元素，结果为：[a_a, b_b, c_c, d_d,a_a] <br>
+第二次：b_b 赋值给第5个元素，结果为：[a_a, b_b, c_c, d_d,b_b] <br>
+第三次：c_c 赋值给第5个元素，结果为：[a_a, b_b, c_c, d_d,c_c] <br>
+第四次：d_d 赋值给第5个元素，结果为：[a_a, b_b, c_c, d_d,d_d] <br>
+第五次：此时因为第五个元素已经变成 d_d 又重新把 d_d 赋值给第5个元素，结果还是为： [a_a, b_b, c_c, d_d,d_d] <br>
+
+解决办法是:<br>
+- 尽量不使用相同的循环变量名
+- 每次使用完或再次使用前进行 unset($a); 处理，解除地址应用,用函数包装好
